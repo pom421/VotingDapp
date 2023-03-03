@@ -1,41 +1,43 @@
-Coucou
+# Voting dApp
 
-# React Truffle Box
 
-This box comes with everything you need to start using Truffle to write, compile, test, and deploy smart contracts, and interact with them from a React app.
+## Features
 
-## Installation
+- [ ]  à l'administrateur de mettre fin à la session de vote.
+- [ ]  à l'administrateur de comptabiliser les votes.
+- [ ]  à tout le monde de consulter le résultat.
 
-First ensure you are in an empty directory.
+## Requirements
 
-Run the `unbox` command using 1 of 2 ways.
+- Votre code doit être optimal. ⇒ cours sur les bonnes pratiques
+- Votre dApp doit être sécurisée. ⇒ cours sur la sécurité
+- Vous devez utiliser la box react de Truffle.
 
-```sh
-# Install Truffle globally and run `truffle unbox`
-$ npm install -g truffle
-$ truffle unbox react
-```
+## Attendus
 
-```sh
-# Alternatively, run `truffle unbox` via npx
-$ npx truffle unbox react
-```
+- [ ]  lien GitHub
+- [ ]  lien vers vidéo présentant les fonctionnalités
+- [ ]  lien vers déploiement de la dApp
 
-Start the react dev server.
+---
 
-```sh
-$ cd client
-$ npm start
-```
+## Todo list
 
-From there, follow the instructions on the hosted React app. It will walk you through using Truffle and Ganache to deploy the `SimpleStorage` contract, making calls to it, and sending transactions to change the contract's state.
+### Conception
 
-## FAQ
+- [ ]  Maquettes figma
+- [ ]  Décider du nom des URL pour chacune des features
 
-- __How do I use this with Ganache (or any other network)?__
+### Configuration
 
-  The Truffle project is set to deploy to Ganache by default. If you'd like to change this, it's as easy as modifying the Truffle config file! Check out [our documentation on adding network configurations](https://trufflesuite.com/docs/truffle/reference/configuration/#networks). From there, you can run `truffle migrate` pointed to another network, restart the React dev server, and see the change take place.
+- [ ]  Création d’une dApp avec la truffle box React
+- [ ]  Configuration de la dApp (eslint, prettier, vscode)
+- [ ]  Test développement local: Ganache, truffle, app React avec web3.js
+- [ ]  .env + tester déploiement sur Goerli
+- [ ]  Installation Chakra UI, tremor (lib de composants UI React)
 
-- __Where can I find more resources?__
+### Développement
 
-  This Box is a sweet combo of [Truffle](https://trufflesuite.com) and [Webpack](https://webpack.js.org). Either one would be a great place to start!
+- [ ]  Documenter le contrat Voting.sol en NatSpec
+- [ ]  Optimiser tallyVote au niveau du tableau
+- [ ]  Sécuriser chacune des fonctions
