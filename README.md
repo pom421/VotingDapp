@@ -31,6 +31,14 @@ npm start
 - connect the account in MetaMask
 - check with write and read in homepage
 
+## Déploiement sur Goerli
+
+Add a `.env` file in truffle directory and fill it like `.env.dist`.
+
+```shell
+truffle migrate --network goerli
+```
+
 
 
 
