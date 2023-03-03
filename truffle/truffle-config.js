@@ -1,7 +1,7 @@
-// require('dotenv').config();
-// const { MNEMONIC, PROJECT_ID } = process.env;
+require('dotenv').config();
+const { MNEMONIC, PROJECT_ID } = process.env;
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
   /**
@@ -47,6 +47,16 @@ module.exports = {
     //   timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
     //   skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     // },
+
+    goerli: {
+      provider: function () {
+        return new HDWalletProvider({
+          mnemonic: { phrase: `${process.env.MNEMONIC}` },
+          providerOrUrl: `https://goerli.infura.io/v3/${process.env.INFURA_ID}`,
+        });
+      },
+      network_id: 5,
+    },
     //
     // Useful for private networks
     // private: {
