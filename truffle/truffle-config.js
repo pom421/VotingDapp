@@ -1,4 +1,7 @@
+// Load .env file.
 require('dotenv').config();
+
+// Load seed phrase mnemonic and Infura project ID from .env file.
 const { MNEMONIC, PROJECT_ID } = process.env;
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');

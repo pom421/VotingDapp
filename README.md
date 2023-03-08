@@ -7,22 +7,23 @@ dApp for DAO voting.
 ```shell
 git clone https://github.com/pom421/VotingDapp.git
 cd VotingDapp
-cd truffle
-npm install
-cd ../client
 npm install
 ```
 
-```shell
-cd ../truffle
-truffle migrate
-truffle test # pour checker les tests
-```
+## Lancement du smart contract via truffle
+
+1. *En local, il faut auparavant lancer un client Ethereum comme Ganache (ex: `ganache`)*
+1. npm run truffle:migrate
+
+*TODO: add a script to migrate on Goerli.*
+
+## Lancement du client React
 
 ```shell
-cd ../client
-npm start
+npm run client:start
 ```
+
+*TODO: add a .env to have MNEMONIC and INFURA_ID for the React app.*
 
 ### MetaMask
 
