@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.18;
+pragma solidity ^0.8.18;
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
 /**
@@ -33,7 +33,7 @@ contract Voting is Ownable {
         ProposalsRegistrationStarted,
         ProposalsRegistrationEnded,
         VotingSessionStarted,
-        VotingSessionEnded,
+        VotingSessionEnded
     }
 
     WorkflowStatus public workflowStatus;
