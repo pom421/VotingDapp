@@ -11,6 +11,7 @@
     "truffle:compile": "cd truffle && npm run compile",
     "truffle:migrate": "cd truffle && npm run migrate",
     "truffle:migrate:goerli": "cd truffle && npm run migrate -- --network goerli",
+    "truffle:migrate:sepolia": "cd truffle && npm run migrate -- --network sepolia",
     "truffle:test": "cd truffle && npm test"
   },
   "repository": {
