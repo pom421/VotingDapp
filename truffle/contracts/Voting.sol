@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.17;
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
-/**
- * @title Voting
- * @dev Smart contract for conducting a voting process using blockchain technology
- * @author Alyra. Updated by Guilhain Averlant & Pierre Olivier Mauget
- * @notice This contract allows voters to register, submit proposals, and vote on proposals
- * @notice The voting process has multiple stages that are controlled by the contract owner
- * @notice Voters can only vote once and can only vote on proposals that have been registered
- * @notice The winning proposal is the one with the highest number of votes
- */
+/*
+ @title Voting
+ @dev Smart contract for conducting a voting process using blockchain technology
+ @author Alyra. Updated by Guilhain Averlant & Pierre Olivier Mauget
+ @notice This contract allows voters to register, submit proposals, and vote on proposals
+ @notice The voting process has multiple stages that are controlled by the contract owner
+ @notice Voters can only vote once and can only vote on proposals that have been registered
+ @notice The winning proposal is the one with the highest number of votes
+*/
 
 contract Voting is Ownable {
 
@@ -55,7 +55,7 @@ contract Voting is Ownable {
 
     // ::::::::::::: GETTERS ::::::::::::: //
 
-    /**
+    /*
     @notice Returns the voter information for a given address.
     @param _addr The address of the voter.
     @return The voter's information including registration status, vote status, and voted proposal ID.
@@ -64,7 +64,7 @@ contract Voting is Ownable {
         return voters[_addr];
     }
     
-    /**
+    /*
     @notice Returns a single proposal from the proposalsArray based on its ID.
     @param _id uint ID of the proposal to retrieve.
     @return Proposal memory The proposal object containing all of its details.
@@ -76,7 +76,7 @@ contract Voting is Ownable {
  
     // ::::::::::::: REGISTRATION ::::::::::::: // 
 
-    /**
+    /*
     @notice Registers a new voter by adding their address to the list of voters.
     @dev Requirements:
     @dev     - The workflow status must be "RegisteringVoters".
@@ -95,7 +95,7 @@ contract Voting is Ownable {
 
     // ::::::::::::: PROPOSAL ::::::::::::: // 
 
-    /**
+    /*
     @notice Adds a new proposal to the proposals array.
     @dev  Requirements:
     @dev     - The workflow status must be set to ProposalsRegistrationStarted.
@@ -117,8 +117,7 @@ contract Voting is Ownable {
 
     // ::::::::::::: VOTE ::::::::::::: //
 
-    /**
-
+    /*
     @notice Allows a registered voter to vote for a proposal with a given ID.
     @dev Requirements:
     @dev     - Voting session must have started.
@@ -147,7 +146,7 @@ contract Voting is Ownable {
 
     // ::::::::::::: STATE ::::::::::::: //
     
-    /**
+    /*
     @notice Allows the owner to start the proposals registration process
     @dev This function can only be called when the workflow status is set to RegisteringVoters
     @dev The function initializes the workflow status to ProposalsRegistrationStarted
@@ -165,7 +164,7 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
     }
 
-    /**
+    /*
     @notice End the proposals registration period
     @dev Only the owner can call this function
     @dev The workflow status must be "ProposalsRegistrationStarted"
@@ -178,23 +177,23 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded);
     }
 
-    /**
+    /*
      * @notice Start the voting session, only the contract owner can call this function
      * @dev The workflow status must be `ProposalsRegistrationEnded` to start the voting session
      * @emit a `WorkflowStatusChange` event with `ProposalsRegistrationEnded` and `VotingSessionStarted` as parameters
-     */
+    */
     function startVotingSession() external onlyOwner {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, 'Registering proposals phase is not finished');
         workflowStatus = WorkflowStatus.VotingSessionStarted;
         emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationEnded, WorkflowStatus.VotingSessionStarted);
     }
 
-    /**
-     * @notice End the voting session and update the workflow status to `VotingSessionEnded`.
-     * @dev This function can only be called by the contract owner.
-     * @dev Requires that the workflow status is currently `VotingSessionStarted`.
-     * @emit a `WorkflowStatusChange` event with the previous and current workflow status.
-     */
+    /*
+    @notice End the voting session and update the workflow status to `VotingSessionEnded`.
+    @dev This function can only be called by the contract owner.
+    @dev Requires that the workflow status is currently `VotingSessionStarted`.
+    @emit a `WorkflowStatusChange` event with the previous and current workflow status.
+    */
     function endVotingSession() external onlyOwner {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, 'Voting session havent started yet');
         workflowStatus = WorkflowStatus.VotingSessionEnded;
