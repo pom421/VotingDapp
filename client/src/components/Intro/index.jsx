@@ -1,6 +1,6 @@
-import Welcome from "./Welcome";
-import Tree from "./Tree";
-import Desc from "./Desc";
+import Welcome from "./Welcome"
+import Tree from "./Tree"
+import Desc from "./Desc"
 
 function Intro() {
   return (
@@ -9,7 +9,7 @@ function Intro() {
       <Tree />
       <Desc />
     </>
-  );
+  )
 }
 
-export default Intro;
+export default Intro

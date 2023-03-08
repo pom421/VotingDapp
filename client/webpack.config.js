@@ -1,8 +1,9 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const EslintWebpackPlugin = require("eslint-webpack-plugin");
+/* eslint-disable no-undef */
+const path = require("path")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
+const EslintWebpackPlugin = require("eslint-webpack-plugin")
 
-const extensions = [".js", ".jsx"];
+const extensions = [".js", ".jsx"]
 
 module.exports = {
   mode: process.env.NODE_ENV === "production" ? "production" : "development",
@@ -44,4 +45,4 @@ module.exports = {
     }),
   ],
   stats: "minimal",
-};
+}
