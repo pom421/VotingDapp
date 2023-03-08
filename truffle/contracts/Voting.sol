@@ -11,7 +11,6 @@ import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
  * @notice The voting process has multiple stages that are controlled by the contract owner
  * @notice Voters can only vote once and can only vote on proposals that have been registered
  * @notice The winning proposal is the one with the highest number of votes
- * @notice Only the contract owner can tally the votes and determine the winning proposal
  */
 
 contract Voting is Ownable {
@@ -35,7 +34,6 @@ contract Voting is Ownable {
         ProposalsRegistrationEnded,
         VotingSessionStarted,
         VotingSessionEnded,
-        VotesTallied
     }
 
     WorkflowStatus public workflowStatus;
@@ -58,7 +56,7 @@ contract Voting is Ownable {
     // ::::::::::::: GETTERS ::::::::::::: //
 
     /**
-    @dev Returns the voter information for a given address.
+    @notice Returns the voter information for a given address.
     @param _addr The address of the voter.
     @return The voter's information including registration status, vote status, and voted proposal ID.
     */
@@ -67,7 +65,7 @@ contract Voting is Ownable {
     }
     
     /**
-    @dev Returns a single proposal from the proposalsArray based on its ID.
+    @notice Returns a single proposal from the proposalsArray based on its ID.
     @param _id uint ID of the proposal to retrieve.
     @return Proposal memory The proposal object containing all of its details.
     */
@@ -79,12 +77,12 @@ contract Voting is Ownable {
     // ::::::::::::: REGISTRATION ::::::::::::: // 
 
     /**
-    @dev Registers a new voter by adding their address to the list of voters.
+    @notice Registers a new voter by adding their address to the list of voters.
+    @dev Requirements:
+    @dev     - The workflow status must be "RegisteringVoters".
+    @dev     - The voter must not already be registered.
     @param _addr The address of the voter to register.
-    @notice Requirements:
-    @notice     - The workflow status must be "RegisteringVoters".
-    @notice     - The voter must not already be registered.
-    @notice Emit a VoterRegistered event.
+    @emit a VoterRegistered event.
     */
     function addVoter(address _addr) external onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, 'Voters registration is not open yet');
@@ -98,13 +96,13 @@ contract Voting is Ownable {
     // ::::::::::::: PROPOSAL ::::::::::::: // 
 
     /**
-    @dev Adds a new proposal to the proposals array.
+    @notice Adds a new proposal to the proposals array.
+    @dev  Requirements:
+    @dev     - The workflow status must be set to ProposalsRegistrationStarted.
+    @dev     - The proposal description cannot be an empty string.
+    @dev     - Only registered voters can add a proposal.
     @param _desc A string representing the proposal's description.
-    @notice  Requirements:
-    @notice     - The workflow status must be set to ProposalsRegistrationStarted.
-    @notice     - The proposal description cannot be an empty string.
-    @notice     - Only registered voters can add a proposal.
-    @notice Emit a ProposalRegistered event.
+    @emit a ProposalRegistered event.
     */
     function addProposal(string calldata _desc) external onlyVoters {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, 'Proposals are not allowed yet');
@@ -121,13 +119,14 @@ contract Voting is Ownable {
 
     /**
 
-    @dev Allows a registered voter to vote for a proposal with a given ID.
+    @notice Allows a registered voter to vote for a proposal with a given ID.
+    @dev Requirements:
+    @dev     - Voting session must have started.
+    @dev     - The voter must not have voted before.
+    @dev     - The proposal ID must exist.
+    @dev To avoid Gas Limit Exceeded error, we compute the winning proposal ID in the same function
     @param _id The ID of the proposal to vote for.
-    @notice Requirements:
-    @notice     - Voting session must have started.
-    @notice     - The voter must not have voted before.
-    @notice     - The proposal ID must exist.
-    @notice Emit a Voted event.
+    @emit a Voted event.
     */
     function setVote( uint _id) external onlyVoters {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, 'Voting session havent started yet');
@@ -138,17 +137,22 @@ contract Voting is Ownable {
         voters[msg.sender].hasVoted = true;
         proposalsArray[_id].voteCount++;
 
+        // we compute the winning proposal
+        if (proposals[proposalId].voteCount > proposals[winningProposalId].voteCount) {
+            winningProposalId = proposalId;
+        }
+
         emit Voted(msg.sender, _id);
     }
 
     // ::::::::::::: STATE ::::::::::::: //
     
     /**
-    @dev Allows the owner to start the proposals registration process
-    @notice This function can only be called when the workflow status is set to RegisteringVoters
-    @notice The function initializes the workflow status to ProposalsRegistrationStarted
-    @notice The function also creates a GENESIS proposal with id 0
-    @notice Emits a WorkflowStatusChange event with the old and new workflow status
+    @notice Allows the owner to start the proposals registration process
+    @dev This function can only be called when the workflow status is set to RegisteringVoters
+    @dev The function initializes the workflow status to ProposalsRegistrationStarted
+    @dev The function also creates a GENESIS proposal with id 0
+    @emit a WorkflowStatusChange event with the old and new workflow status
     */
     function startProposalsRegistering() external onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, 'Registering proposals cant be started now');
@@ -162,11 +166,11 @@ contract Voting is Ownable {
     }
 
     /**
-    @dev End the proposals registration period
-    @notice Only the owner can call this function
-    @notice The workflow status must be "ProposalsRegistrationStarted"
-    @notice Once the function is called, the workflow status will be changed to "ProposalsRegistrationEnded"
-    @notice Emits a "WorkflowStatusChange" event with the previous status "ProposalsRegistrationStarted" and the new status "ProposalsRegistrationEnded"
+    @notice End the proposals registration period
+    @dev Only the owner can call this function
+    @dev The workflow status must be "ProposalsRegistrationStarted"
+    @dev Once the function is called, the workflow status will be changed to "ProposalsRegistrationEnded"
+    @emit a "WorkflowStatusChange" event with the previous status "ProposalsRegistrationStarted" and the new status "ProposalsRegistrationEnded"
     */
     function endProposalsRegistering() external onlyOwner {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, 'Registering proposals havent started yet');
@@ -175,9 +179,9 @@ contract Voting is Ownable {
     }
 
     /**
-     * @dev Start the voting session, only the contract owner can call this function
-     * @notice The workflow status must be `ProposalsRegistrationEnded` to start the voting session
-     * @notice Emit a `WorkflowStatusChange` event with `ProposalsRegistrationEnded` and `VotingSessionStarted` as parameters
+     * @notice Start the voting session, only the contract owner can call this function
+     * @dev The workflow status must be `ProposalsRegistrationEnded` to start the voting session
+     * @emit a `WorkflowStatusChange` event with `ProposalsRegistrationEnded` and `VotingSessionStarted` as parameters
      */
     function startVotingSession() external onlyOwner {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, 'Registering proposals phase is not finished');
@@ -186,10 +190,10 @@ contract Voting is Ownable {
     }
 
     /**
-     * @dev End the voting session and update the workflow status to `VotingSessionEnded`.
-     * @notice This function can only be called by the contract owner.
-     * @notice Requires that the workflow status is currently `VotingSessionStarted`.
-     * @notice Emits a `WorkflowStatusChange` event with the previous and current workflow status.
+     * @notice End the voting session and update the workflow status to `VotingSessionEnded`.
+     * @dev This function can only be called by the contract owner.
+     * @dev Requires that the workflow status is currently `VotingSessionStarted`.
+     * @emit a `WorkflowStatusChange` event with the previous and current workflow status.
      */
     function endVotingSession() external onlyOwner {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, 'Voting session havent started yet');
@@ -197,23 +201,4 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
     }
 
-    /**
-     * @dev Tally the votes and determine the winning proposal.
-     * @notice Can only be called by the owner of the contract.
-     * @notice The current status of the contract must be VotingSessionEnded.
-     * @notice Emits a WorkflowStatusChange event with the old and new statuses.
-     */
-   function tallyVotes() external onlyOwner {
-       require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Current status is not voting session ended");
-       uint _winningProposalId;
-      for (uint256 p = 0; p < proposalsArray.length; p++) {
-           if (proposalsArray[p].voteCount > proposalsArray[_winningProposalId].voteCount) {
-               _winningProposalId = p;
-          }
-       }
-       winningProposalID = _winningProposalId;
-       
-       workflowStatus = WorkflowStatus.VotesTallied;
-       emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.VotesTallied);
-    }
 }
