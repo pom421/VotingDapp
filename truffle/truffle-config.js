@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 // Load seed phrase mnemonic and Infura project ID from .env file.
-const { MNEMONIC, INFURA_ID } = process.env;
+const { MNEMONIC, INFURA_ID, ALCHEMY_ID } = process.env;
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
@@ -67,15 +67,15 @@ module.exports = {
         ),
       network_id: 11155111,
     },
-    // mumbai: {
-    //   provider: () =>
-    //     new HDWalletProvider(
-    //       MNEMONIC,
-    //       `https://polygon-mumbai.infura.io/v3/${INFURA_ID}`
-    //     ),
-    //   network_id: 80001,
-    // },
-    //
+    mumbai: {
+      provider: () =>
+        new HDWalletProvider(
+          MNEMONIC,
+          `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_ID}`
+        ),
+      network_id: 80001,
+    },
+    
     // Useful for private networks
     // private: {
     //   provider: () => new HDWalletProvider(MNEMONIC, `https://network.io`),
