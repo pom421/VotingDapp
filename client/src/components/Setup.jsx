@@ -18,12 +18,12 @@ function Setup() {
 
       <details>
         <summary>Truffle</summary>
-        <p>Keep Ganache running and open another terminal. Let's compile and deploy our contracts to Ganache.</p>
+        <p>{"Keep Ganache running and open another terminal. Let's compile and deploy our contracts to Ganache."}</p>
         <code>
           {`$ cd truffle\n`}
           {`$ truffle migrate --network development\n`}
           <span className="dim-color">
-            # The `development` network points to Ganache, it's configured in truffle/truffle-config.js on line 45.
+            {"# The `development` network points to Ganache, it's configured in truffle/truffle-config.js on line 45."}
           </span>
         </code>
       </details>
