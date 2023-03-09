@@ -1,27 +1,25 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react"
 
 function Contract({ value }) {
-  const spanEle = useRef(null);
+  const spanEle = useRef(null)
 
   useEffect(() => {
-    spanEle.current.classList.add("flash");
+    spanEle.current.classList.add("flash")
     const flash = setTimeout(() => {
-      spanEle.current.classList.remove("flash");
-    }, 300);
+      spanEle.current.classList.remove("flash")
+    }, 300)
     return () => {
-      clearTimeout(flash);
-    };
-  }, [value]);
+      clearTimeout(flash)
+    }
+  }, [value])
 
   return (
     <code>
       {`contract SimpleStorage {
   uint256 value = `}
-
       <span className="secondary-color" ref={spanEle}>
         <strong>{value}</strong>
       </span>
-
       {`;
 
   function read() public view returns (uint256) {
@@ -33,7 +31,7 @@ function Contract({ value }) {
   }
 }`}
     </code>
-  );
+  )
 }
 
-export default Contract;
+export default Contract

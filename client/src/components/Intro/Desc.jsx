@@ -7,7 +7,7 @@ function Desc() {
       </a>
       , a popular Ethereum library.
     </p>
-  );
+  )
 }
 
-export default Desc;
+export default Desc

@@ -20,9 +20,6 @@ coverage
 .env.test.local
 .env.production.local
 
-# Editor
-.vscode
-
 # Misc.
 .DS_Store
 
