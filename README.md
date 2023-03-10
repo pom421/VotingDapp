@@ -27,7 +27,7 @@ npm run client:start
 - connect the account in MetaMask
 - check with write and read in homepage
 
-## Déploiement sur Sepolia
+## Déploiement du contrat sur Sepolia
 
 Cloner le fichier `.env.dist` en `.env` dans le répertoire truffle et remplir les variables d'environnement.
 
@@ -35,16 +35,14 @@ Cloner le fichier `.env.dist` en `.env` dans le répertoire truffle et remplir l
 npm run truffle:migrate:sepolia
 ```
 
+PS: le fichier `.env` doit être bien configuré (i. e. avoir la mnémonique d'un wallet fourni en ETH sepolia).
 PS: pour d'autres réseaux, ajouter la configuration dans truffle-config.js et le script dans package.json.
 
-## Déploiement total sur Sepolia
+## Déploiement du client vers le contrat sur Sepolia
 
-```shell
-npm run run:sepolia
-```
-
-Ceci va lancer le déploiement du contrat sur la chain Sepolia, copier le stub dans client/contrats, puis lancer le client React.
-Il est nécessaire d'avoir un fichier `.env` qui comporte une mnémonic dont le 1er compte est pourvu en ETH sur Sepolia, afin que le dépoiement soit possible (paiement en gas).
+1. `npm run truffle:migrate:sepolia`.
+1. Faire un commit du client car les fichiers .json dans contracts ont changé avec le networkd et l'adresse du contrat Voting; puis un git push.
+1. Vercel va déployer automatiquement le client React vers le contrat sur Sepolia.
 
 ## FAQ
 
