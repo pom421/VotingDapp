@@ -37,6 +37,15 @@ npm run truffle:migrate:sepolia
 
 PS: pour d'autres réseaux, ajouter la configuration dans truffle-config.js et le script dans package.json.
 
+## Déploiement total sur Sepolia
+
+```shell
+npm run run:sepolia
+```
+
+Ceci va lancer le déploiement du contrat sur la chain Sepolia, copier le stub dans client/contrats, puis lancer le client React.
+Il est nécessaire d'avoir un fichier `.env` qui comporte une mnémonic dont le 1er compte est pourvu en ETH sur Sepolia, afin que le dépoiement soit possible (paiement en gas).
+
 ## FAQ
 
 ### Comment récupérer des eth sur Sepolia ? 
