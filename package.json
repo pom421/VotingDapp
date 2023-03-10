@@ -13,7 +13,9 @@
     "truffle:migrate:goerli": "cd truffle && npm run migrate -- --network goerli",
     "truffle:migrate:mumbai": "cd truffle && npm run migrate -- --network mumbai",
     "truffle:migrate:sepolia": "cd truffle && npm run migrate -- --network sepolia",
-    "truffle:test": "cd truffle && npm test"
+    "truffle:test": "cd truffle && npm test",
+    "build:sepolia": "npm run truffle:migrate:sepolia && npm run client:build",
+    "run:sepolia": "npm run build:sepolia && npm run client:start"
   },
   "repository": {
     "type": "git",
