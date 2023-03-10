@@ -32,7 +32,7 @@ function EthProvider({ children }) {
     const tryInit = async () => {
       try {
         // eslint-disable-next-line no-undef
-        const artifact = require("../../contracts/SimpleStorage.json")
+        const artifact = require("../../contracts/Voting.json")
         init(artifact)
       } catch (err) {
         console.error(err)

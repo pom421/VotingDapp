@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useEth } from "../contexts/EthContext"
+import { ALL_STATUS } from "../utils/constants"
 
 const getETHBalance = async (account, web3) => {
   if (account && web3) {
@@ -9,16 +10,25 @@ const getETHBalance = async (account, web3) => {
   }
 }
 
+const getStatus = async (account, contract) => {
+  if (account && contract) {
+    const status = await contract.methods.workflowStatus().call({ from: account })
+    return ALL_STATUS[status]
+  }
+}
+
 export const DebugInfo = () => {
   const {
-    state: { networkName, networkID, accounts, web3 },
+    state: { contract, networkName, networkID, accounts, web3 },
   } = useEth()
 
   const [ETHbalance, setETHBalance] = useState(0)
+  const [status, setStatus] = useState("")
 
   useEffect(() => {
     const runAsync = async () => {
       setETHBalance(await getETHBalance(accounts?.[0], web3))
+      setStatus(await getStatus(accounts?.[0], contract))
     }
     runAsync()
   }, [accounts?.[0]])
@@ -35,6 +45,9 @@ export const DebugInfo = () => {
       </p>
       <p>
         <strong>ETH Balance</strong> {ETHbalance} ETH
+      </p>
+      <p>
+        <strong>Statut vote</strong> {status}
       </p>
     </div>
   )
