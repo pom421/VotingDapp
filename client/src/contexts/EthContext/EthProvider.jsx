@@ -1,5 +1,6 @@
 import React, { useReducer, useCallback, useEffect } from "react"
 import Web3 from "web3"
+import { NETWORKS } from "../../utils/constants"
 import EthContext from "./EthContext"
 import { reducer, actions, initialState } from "./state"
 
@@ -11,6 +12,7 @@ function EthProvider({ children }) {
       const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545")
       const accounts = await web3.eth.requestAccounts()
       const networkID = await web3.eth.net.getId()
+      const networkName = NETWORKS[networkID] || "Réseau inconnu"
       const { abi } = artifact
       let address, contract
       try {
@@ -21,7 +23,7 @@ function EthProvider({ children }) {
       }
       dispatch({
         type: actions.init,
-        data: { artifact, web3, accounts, networkID, contract },
+        data: { artifact, web3, accounts, networkID, networkName, contract },
       })
     }
   }, [])
@@ -30,7 +32,7 @@ function EthProvider({ children }) {
     const tryInit = async () => {
       try {
         // eslint-disable-next-line no-undef
-        const artifact = require("../../contracts/SimpleStorage.json")
+        const artifact = require("../../contracts/Voting.json")
         init(artifact)
       } catch (err) {
         console.error(err)
