@@ -41,7 +41,7 @@ PS: pour d'autres réseaux, ajouter la configuration dans truffle-config.js et l
 ## Déploiement du client vers le contrat sur Sepolia
 
 1. `npm run truffle:migrate:sepolia`.
-1. Faire un commit du client car les fichiers .json dans contracts ont changé avec le networkd et l'adresse du contrat Voting; puis un git push.
+1. Faire un commit du client car les fichiers .json dans contracts ont changé avec le networkd et l'adresse du contrat Voting puis un git push.
 1. Vercel va déployer automatiquement le client React vers le contrat sur Sepolia.
 
 ## FAQ
