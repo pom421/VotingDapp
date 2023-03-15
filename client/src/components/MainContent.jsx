@@ -1,14 +1,15 @@
 import { useMainContext } from "../contexts/MainContext"
+import { AddVoters } from "../pages/AddVoter"
 import Hero from "./Hero"
-import Layout from "./Layout"
 
 export const PageIndex = {
   hero: <Hero />,
-  layout: <Layout />,
+  layout: <AddVoters />,
 }
 
-export const defaultPage = "hero"
+export const defaultPage = "layout"
 
+// Routing component (routing light).
 export const MainContent = () => {
   const { step } = useMainContext()
 

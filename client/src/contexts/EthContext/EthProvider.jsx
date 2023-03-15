@@ -1,11 +1,42 @@
 import React, { useReducer, useCallback, useEffect } from "react"
 import Web3 from "web3"
 import { NETWORKS } from "../../utils/constants"
-import EthContext from "./EthContext"
-import { reducer, actions, initialState } from "./state"
+
+import { createContext } from "react"
+
+const EthContext = createContext()
+
+EthContext.displayName = "EthContext"
+
+const actions = {
+  init: "INIT",
+}
+
+const initialState = {
+  artifact: null,
+  web3: null,
+  userAdress: null,
+  networkName: null,
+  networkID: null,
+  contract: null,
+}
+
+const reducer = (state, action) => {
+  const { type, data } = action
+  switch (type) {
+    case actions.init:
+      return { ...state, ...data }
+    default:
+      throw new Error("Undefined reducer action type")
+  }
+}
+
+export { actions, initialState, reducer }
 
 function EthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState)
+
+  console.log("state", state)
 
   const init = useCallback(async (artifact) => {
     if (artifact) {
@@ -23,7 +54,7 @@ function EthProvider({ children }) {
       }
       dispatch({
         type: actions.init,
-        data: { artifact, web3, accounts, networkID, networkName, contract },
+        data: { artifact, web3, userAddress: accounts[0], networkID, networkName, contract },
       })
     }
   }, [])

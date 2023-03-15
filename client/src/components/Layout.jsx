@@ -14,8 +14,12 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  Text,
+  Badge,
+  Container,
 } from "@chakra-ui/react"
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons"
+import { useEth } from "../contexts/EthContext"
 
 const Links = ["Accueil", "Dashboard"]
 
@@ -34,8 +38,15 @@ const NavLink = ({ children }) => (
   </Link>
 )
 
-export default function Layout() {
+const sumupAddress = (address) => {
+  return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ""
+}
+
+export default function Layout({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    state: { networkName, userAddress },
+  } = useEth()
 
   return (
     <>
@@ -49,7 +60,11 @@ export default function Layout() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"}>
-            <Box>Logo</Box>
+            <Box>
+              <Text color="blue.700" fontSize="2xl">
+                Oh.My.Vote
+              </Text>
+            </Box>
             <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
               {Links.map((link) => (
                 <NavLink key={link}>{link}</NavLink>
@@ -58,14 +73,23 @@ export default function Layout() {
           </HStack>
           <Flex alignItems={"center"}>
             <Menu>
-              <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
-                <Avatar
-                  size={"sm"}
-                  src={
-                    "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                  }
-                />
-              </MenuButton>
+              <Flex>
+                <MenuButton as={Button} rounded={"full"} variant={"link"} cursor={"pointer"} minW={0}>
+                  <Avatar size={"sm"} />
+                </MenuButton>
+                <Box ml="3">
+                  <Text>
+                    {sumupAddress(userAddress)}{" "}
+                    <Badge fontSize="sm" colorScheme="green" ml="1">
+                      Voter
+                    </Badge>
+                  </Text>
+
+                  <Badge variant="outline" fontSize="0.7em">
+                    {networkName}
+                  </Badge>
+                </Box>
+              </Flex>
               <MenuList>
                 <MenuItem>Link 1</MenuItem>
                 <MenuItem>Link 2</MenuItem>
@@ -87,7 +111,9 @@ export default function Layout() {
         ) : null}
       </Box>
 
-      <Box p={4}>Main Content Here</Box>
+      <Container>
+        <Box p={4}>{children}</Box>
+      </Container>
     </>
   )
 }

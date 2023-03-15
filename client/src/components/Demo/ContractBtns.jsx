@@ -3,7 +3,7 @@ import useEth from "../../contexts/EthContext/useEth"
 
 function ContractBtns({ setValue }) {
   const {
-    state: { contract, accounts },
+    state: { contract, userAddress },
   } = useEth()
   const [inputValue, setInputValue] = useState("")
 
@@ -14,7 +14,7 @@ function ContractBtns({ setValue }) {
   }
 
   const read = async () => {
-    const value = await contract.methods.read().call({ from: accounts[0] })
+    const value = await contract.methods.read().call({ from: userAddress })
     setValue(value)
   }
 
@@ -27,7 +27,7 @@ function ContractBtns({ setValue }) {
       return
     }
     const newValue = parseInt(inputValue)
-    await contract.methods.write(newValue).send({ from: accounts[0] })
+    await contract.methods.write(newValue).send({ from: userAddress })
   }
 
   return (

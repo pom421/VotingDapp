@@ -19,7 +19,7 @@ const getStatus = async (account, contract) => {
 
 export const DebugInfo = () => {
   const {
-    state: { contract, networkName, networkID, accounts, web3 },
+    state: { contract, networkName, networkID, userAddress, web3 },
   } = useEth()
 
   const [ETHbalance, setETHBalance] = useState(0)
@@ -27,11 +27,11 @@ export const DebugInfo = () => {
 
   useEffect(() => {
     const runAsync = async () => {
-      setETHBalance(await getETHBalance(accounts?.[0], web3))
-      setStatus(await getStatus(accounts?.[0], contract))
+      setETHBalance(await getETHBalance(userAddress, web3))
+      setStatus(await getStatus(userAddress, contract))
     }
     runAsync()
-  }, [accounts?.[0]])
+  }, [userAddress])
 
   return (
     <div style={{ border: "1px solid grey", padding: 10, borderRadius: 5 }}>
@@ -41,7 +41,7 @@ export const DebugInfo = () => {
         <strong>Réseau</strong> {networkID} ({networkName})
       </p>
       <p>
-        <strong>Utilisateur</strong> {accounts?.[0]}
+        <strong>Utilisateur</strong> {userAddress}
       </p>
       <p>
         <strong>ETH Balance</strong> {ETHbalance} ETH

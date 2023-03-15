@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react"
 import { defaultPage } from "../components/MainContent"
 
 const MainContext = createContext()
+MainContext.displayName = "MainContext"
 
 export const MainContextProvider = (props) => {
   const [step, setStep] = useState(defaultPage)
@@ -15,7 +16,7 @@ export const MainContextProvider = (props) => {
 }
 
 /**
- * @typedef {Object} MainCcontextValue
+ * @typedef {Object} MainContextValue
  * @property {string} step - The step index (Object.keys(PageIndex))
  * @property {function} setStep - The step's mutator
  */
@@ -23,7 +24,7 @@ export const MainContextProvider = (props) => {
 /**
  * Custom hook to consume the MainContext.
  *
- * @returns { MainCcontextValue }
+ * @returns { MainContextValue }
  *          The MainContext value
  */
 export const useMainContext = () => {
