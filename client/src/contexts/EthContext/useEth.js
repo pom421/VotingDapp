@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import EthContext from "./EthContext"
+import EthContext from "./EthProvider"
 
 // const useEth = () => useContext(EthContext)
 
