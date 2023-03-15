@@ -1,7 +1,7 @@
 import { Box, Heading, Container, Text, Button, Stack, Icon, useColorModeValue, createIcon } from "@chakra-ui/react"
 import { useMainContext } from "../contexts/MainContext"
 
-export default function Hero() {
+export function Hero() {
   const { setStep } = useMainContext()
 
   return (

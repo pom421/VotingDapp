@@ -1,6 +1,6 @@
 import { useMainContext } from "../contexts/MainContext"
 import { AddVoters } from "../pages/AddVoter"
-import Hero from "./Hero"
+import { Hero } from "./Hero"
 
 export const PageIndex = {
   hero: <Hero />,

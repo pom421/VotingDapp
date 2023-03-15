@@ -16,7 +16,7 @@ import {
   Stack,
   Text,
   Badge,
-  Container,
+  Highlight,
 } from "@chakra-ui/react"
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons"
 import { useEth } from "../contexts/EthContext"
@@ -42,10 +42,10 @@ const sumupAddress = (address) => {
   return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ""
 }
 
-export default function Layout({ children }) {
+export function Layout({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const {
-    state: { networkName, userAddress },
+    state: { networkName, connectedUser, workflowStatus },
   } = useEth()
 
   return (
@@ -62,7 +62,9 @@ export default function Layout({ children }) {
           <HStack spacing={8} alignItems={"center"}>
             <Box>
               <Text color="blue.700" fontSize="2xl">
-                Oh.My.Vote
+                <Highlight query={["My"]} styles={{ px: "1", py: "1", bg: "orange.100" }}>
+                  Oh.My.Vote
+                </Highlight>
               </Text>
             </Box>
             <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
@@ -79,7 +81,7 @@ export default function Layout({ children }) {
                 </MenuButton>
                 <Box ml="3">
                   <Text>
-                    {sumupAddress(userAddress)}{" "}
+                    {sumupAddress(connectedUser)}{" "}
                     <Badge fontSize="sm" colorScheme="green" ml="1">
                       Voter
                     </Badge>
@@ -111,9 +113,12 @@ export default function Layout({ children }) {
         ) : null}
       </Box>
 
-      <Container>
-        <Box p={4}>{children}</Box>
-      </Container>
+      <Stack mt="8" maxW="980" mx="auto" gap="4">
+        <HStack justifyContent="right">
+          <Badge fontSize="lg">{workflowStatus}</Badge>
+        </HStack>
+        {children}
+      </Stack>
     </>
   )
 }
