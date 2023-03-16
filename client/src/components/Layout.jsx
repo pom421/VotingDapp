@@ -17,8 +17,9 @@ import {
   Text,
   Badge,
   Highlight,
+  useColorMode,
 } from "@chakra-ui/react"
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons"
+import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from "@chakra-ui/icons"
 import { useEth } from "../contexts/EthContext"
 
 const Links = ["Accueil", "Dashboard"]
@@ -43,6 +44,8 @@ const sumupAddress = (address) => {
 }
 
 export function Layout({ children }) {
+  const { colorMode, toggleColorMode } = useColorMode()
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const {
     state: { networkName, connectedUser, workflowStatus },
@@ -93,7 +96,10 @@ export function Layout({ children }) {
                 </Box>
               </Flex>
               <MenuList>
-                <MenuItem>Link 1</MenuItem>
+                <MenuItem onClick={toggleColorMode}>
+                  {colorMode === "light" ? <MoonIcon /> : <SunIcon />}&nbsp;
+                  {colorMode === "light" ? "Thème sombre" : "Thème clair"}
+                </MenuItem>
                 <MenuItem>Link 2</MenuItem>
                 <MenuDivider />
                 <MenuItem>Link 3</MenuItem>

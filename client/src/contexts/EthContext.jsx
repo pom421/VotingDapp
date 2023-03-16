@@ -5,7 +5,6 @@ import { useContext } from "react"
 import { createContext } from "react"
 
 export const EthContext = createContext()
-
 EthContext.displayName = "EthContext"
 
 const actions = {
