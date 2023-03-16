@@ -9,10 +9,10 @@ export const NETWORKS = {
 }
 
 export const ALL_STATUS = [
-  "RegisteringVoters",
-  "ProposalsRegistrationStarted",
-  "ProposalsRegistrationEnded",
-  "VotingSessionStarted",
-  "VotingSessionEnded",
-  "VotesTallied",
+  "Ajout des votants",
+  "Début des propositions",
+  "Fin des propositions",
+  "Début du vote",
+  "Fin du vote",
+  "Résultat du vote",
 ]

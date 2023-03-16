@@ -115,7 +115,9 @@ export function Layout({ children }) {
 
       <Stack mt="8" maxW="980" mx="auto" gap="4">
         <HStack justifyContent="right">
-          <Badge fontSize="lg">{workflowStatus}</Badge>
+          <Badge fontSize="lg" colorScheme="red">
+            {workflowStatus}
+          </Badge>
         </HStack>
         {children}
       </Stack>

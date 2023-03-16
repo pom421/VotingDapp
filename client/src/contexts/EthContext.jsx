@@ -85,6 +85,7 @@ export function EthProvider({ children }) {
   useEffect(() => {
     const events = ["chainChanged", "accountsChanged"]
     const handleChange = () => {
+      console.log("la chain ou l'account a changé")
       init(state.artifact)
     }
 
@@ -96,15 +97,15 @@ export function EthProvider({ children }) {
 
   useEffect(() => {
     async function run() {
-      const currentBlock = state.web3.eth.getBlockNumber()
+      const currentBlock = await state.web3.eth.getBlockNumber()
       const listener = await state.contract.events.WorkflowStatusChange({ fromBlock: currentBlock })
 
       listener
-        .on("data", async (event) => {
-          console.log("on trouve un changement de status xxx")
+        .on("data", (event) => {
+          console.log("Changement de status", event)
           dispatch({
             type: actions.init,
-            data: { workflowStatus: event.returnValues.newStatus },
+            data: { workflowStatus: ALL_STATUS[event.returnValues.newStatus] },
           })
         })
         .on("error", (err) => console.error("Error on listening event WorkflowStatusChange", err))
@@ -113,7 +114,7 @@ export function EthProvider({ children }) {
     if (state.web3 && state.contract) {
       run()
     }
-  }, [])
+  }, [state.web3, state.contract])
 
   return (
     <EthContext.Provider
@@ -126,8 +127,6 @@ export function EthProvider({ children }) {
     </EthContext.Provider>
   )
 }
-
-// const useEth = () => useContext(EthContext)
 
 /**
  * @typedef {Object} EthContext
