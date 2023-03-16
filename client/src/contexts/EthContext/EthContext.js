@@ -1,5 +1,5 @@
-import { createContext } from "react";
+import { createContext } from "react"
 
-const EthContext = createContext();
+const EthContext = createContext()
 
-export default EthContext;
+export default EthContext

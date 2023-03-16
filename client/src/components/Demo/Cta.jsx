@@ -6,7 +6,7 @@ function Cta() {
       &nbsp;in&nbsp;
       <span className="code">SimpleStorage</span>.
     </p>
-  );
+  )
 }
 
-export default Cta;
+export default Cta

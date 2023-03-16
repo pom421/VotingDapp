@@ -7,8 +7,8 @@ node_modules
 
 # Production
 build
-client/src/contracts
-client/*/src/contracts
+# client/src/contracts
+# client/*/src/contracts
 
 # Testing
 coverage
@@ -19,9 +19,6 @@ coverage
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Editor
-.vscode
 
 # Misc.
 .DS_Store
