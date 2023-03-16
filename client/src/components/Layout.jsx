@@ -21,6 +21,7 @@ import {
 } from "@chakra-ui/react"
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from "@chakra-ui/icons"
 import { useEth } from "../contexts/EthContext"
+import { useMainContext } from "../contexts/MainContext"
 
 const Links = ["Accueil", "Dashboard"]
 
@@ -45,11 +46,11 @@ const sumupAddress = (address) => {
 
 export function Layout({ children }) {
   const { colorMode, toggleColorMode } = useColorMode()
-
   const { isOpen, onOpen, onClose } = useDisclosure()
   const {
     state: { networkName, connectedUser, workflowStatus },
   } = useEth()
+  const { setStep } = useMainContext()
 
   return (
     <>
@@ -100,7 +101,7 @@ export function Layout({ children }) {
                   {colorMode === "light" ? <MoonIcon /> : <SunIcon />}&nbsp;
                   {colorMode === "light" ? "Thème sombre" : "Thème clair"}
                 </MenuItem>
-                <MenuItem>Link 2</MenuItem>
+                <MenuItem onClick={() => setStep("info-page")}>Informations page</MenuItem>
                 <MenuDivider />
                 <MenuItem>Link 3</MenuItem>
               </MenuList>

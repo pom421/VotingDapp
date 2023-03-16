@@ -18,6 +18,7 @@ const initialState = {
   networkName: null,
   networkID: null,
   contract: null,
+  transactionHash: null,
   workflowStatus: null,
 }
 
@@ -51,10 +52,11 @@ export function EthProvider({ children }) {
       const networkID = await web3.eth.net.getId()
       const networkName = NETWORKS[networkID] || "Réseau inconnu"
       const { abi } = artifact
-      let address, contract, workflowStatus
+      let contractAddress, transactionHash, contract, workflowStatus
       try {
-        address = artifact.networks[networkID].address
-        contract = new web3.eth.Contract(abi, address)
+        contractAddress = artifact.networks[networkID].address
+        transactionHash = artifact.networks[networkID].transactionHash
+        contract = new web3.eth.Contract(abi, contractAddress)
         workflowStatus = await getStatus(connectedUser, contract)
       } catch (err) {
         console.error(err)
@@ -62,7 +64,17 @@ export function EthProvider({ children }) {
 
       dispatch({
         type: actions.init,
-        data: { artifact, web3, connectedUser, networkID, networkName, contract, workflowStatus },
+        data: {
+          contractAddress,
+          artifact,
+          web3,
+          connectedUser,
+          networkID,
+          networkName,
+          contract,
+          workflowStatus,
+          transactionHash,
+        },
       })
     }
   }, [])

@@ -1,7 +1,10 @@
 import { Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react"
 import { Layout } from "../components/Layout"
+import { useEventVoter } from "../contexts/useEventVoter"
 
 export const AddVoters = () => {
+  const { voters } = useEventVoter()
+
   return (
     <Layout>
       <Heading as="h2" size="lg" mb="16">
@@ -17,18 +20,12 @@ export const AddVoters = () => {
             </Tr>
           </Thead>
           <Tbody>
-            <Tr>
-              <Td>Voteur #1</Td>
-              <Td>0x242e5908Fe2DACdb90D99d5f4b311f9f64Cff51C</Td>
-            </Tr>
-            <Tr>
-              <Td>Voteur #2</Td>
-              <Td>0x111e5908Fe2DACdb90D99d5f4b311f9f64Cff51C</Td>
-            </Tr>
-            <Tr>
-              <Td>Voteur #3</Td>
-              <Td>0x666e5908Fe2DACdb90D99d5f4b311f9f64Cff51C</Td>
-            </Tr>
+            {voters.map((voter, index) => (
+              <Tr key={voter}>
+                <Td>{index + 1}</Td>
+                <Td>{voter}</Td>
+              </Tr>
+            ))}
           </Tbody>
         </Table>
       </TableContainer>
