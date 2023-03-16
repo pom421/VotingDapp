@@ -7,6 +7,11 @@
     "start": "webpack serve"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.17",
+    "@chakra-ui/react": "^2.5.1",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "framer-motion": "^10.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "web3": "^1.8.2"
