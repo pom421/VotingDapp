@@ -17,8 +17,7 @@ export function useEventVoter() {
       toBlock: "latest",
     })
 
-    const voters = events.map((event) => event.returnValues.voterAddress)
-
+    const voters = events.map((event) => ({ voterAddress: event.returnValues.voterAddress }))
     setVoters(voters)
   }
 
@@ -31,7 +30,7 @@ export function useEventVoter() {
 
     listener.on("data", (event) => {
       console.debug("Ajout de votant", event)
-      setVoters((voters) => [...voters, event.returnValues.voterAddress])
+      setVoters((voters) => [...voters, { voterAddress: event.returnValues.voterAddress }])
     })
 
     return () => listener.unsubscribe()

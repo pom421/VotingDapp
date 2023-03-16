@@ -20,10 +20,10 @@ export const AddVoters = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {voters.map((voter, index) => (
-              <Tr key={voter}>
+            {voters.map(({ voterAddress }, index) => (
+              <Tr key={voterAddress}>
                 <Td>{index + 1}</Td>
-                <Td>{voter}</Td>
+                <Td>{voterAddress}</Td>
               </Tr>
             ))}
           </Tbody>
