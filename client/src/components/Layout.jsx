@@ -26,7 +26,7 @@ import { ALL_STATUS } from "../utils/constants"
 import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
 import { useEventVoter } from "../contexts/useEventVoter"
 
-const Links = ["Accueil", "Dashboard"]
+const Links = []
 
 const NavLink = ({ children }) => (
   <Link
