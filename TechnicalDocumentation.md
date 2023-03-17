@@ -1,134 +1,72 @@
-# Voting Smart Contract Documentation
+# Voting smart contract documentation
 
-## Introduction
+This is a smart contract for conducting a voting process using blockchain technology. It allows voters to register, submit proposals, and vote on proposals. The voting process has multiple stages that are controlled by the contract owner. Voters can only vote once and can only vote on proposals that have been registered. The winning proposal is the one with the highest number of votes.
 
-This smart contract is designed to facilitate voting using blockchain technology. It allows voters to register, submit proposals, and vote on proposals in a secure and transparent manner. The contract is controlled by the contract owner, who can initiate and manage the various stages of the voting process.
+# Contract Information
 
-## Contract Details
-Name: Voting
-License: MIT License
-Solidity version: ^0.8.17
-Author: Alyra. Updated by Guilhain Averlant & Pierre Olivier Mauget
-Dependencies: OpenZeppelin Ownable library
+* SPDX-License-Identifier: MIT
+* pragma solidity ^0.8.17
+* Import: "../node_modules/@openzeppelin/contracts/access/Ownable.sol"
 
-## Workflow Status
+# Contract Variables
 
-The contract has a WorkflowStatus enum that specifies the various stages of the voting process:
+## Structs
 
-RegisteringVoters: This is the initial stage where voters are registered
-ProposalsRegistrationStarted: This stage allows registered voters to submit proposals
-ProposalsRegistrationEnded: This stage ends the proposal submission period
-VotingSessionStarted: This stage allows registered voters to vote on proposals
-VotingSessionEnded: This stage ends the voting period and determines the winning proposal
-The contract owner can move the contract between these stages using various functions.
+* Voter: contains information about a voter, including registration status, vote status, and voted proposal ID.
+* isRegistered: bool, indicating whether the voter is registered.
+* hasVoted: bool, indicating whether the voter has voted.
+* votedProposalId: uint, indicating the ID of the proposal that the voter has voted for.
+* Proposal: contains information about a proposal, including its description and vote count.
+* description: string, representing the proposal's description.
+* voteCount: uint, indicating the number of votes the proposal has received.
 
-## Data Structures
-The contract has two main data structures: Voter and Proposal.
+## Enums
 
-### Voter:
+* WorkflowStatus: indicates the current stage of the voting process.
+* RegisteringVoters: the contract is currently registering voters.
+* ProposalsRegistrationStarted: the contract is currently accepting proposal submissions.
+* ProposalsRegistrationEnded: the contract has stopped accepting proposal submissions.
+* VotingSessionStarted: the contract is currently accepting votes.
+* VotingSessionEnded: the contract has stopped accepting votes.
 
-isRegistered: Boolean value indicating whether the voter is registered
-hasVoted: Boolean value indicating whether the voter has voted
-votedProposalId: ID of the proposal that the voter has voted for
+## Public Variables
 
-### Proposal:
+* winningProposalID: uint, indicating the ID of the proposal with the highest number of votes.
 
-description: String containing the proposal description
-voteCount: Number of votes that the proposal has received
+## Array
+* proposalsArray: store Proposal structs. Array index become proposalID by default.
 
-## Functions
+## Mappings
 
-The following functions are available in this contract:
+* voters: maps voter addresses to Voter structs.
 
-### Getter - getVoter
+## Contract Events
 
-```solidity
-function getVoter(address _addr) external onlyVoters view returns (Voter memory)
-```
+* VoterRegistered: emitted when a new voter is registered.
+* WorkflowStatusChange: emitted when the workflow status changes.
+* ProposalRegistered: emitted when a new proposal is added.
+* Voted: emitted when a voter casts a vote.
 
-Returns the voter information for a given address.
+## Contract Functions
 
+### Getters
 
-#### Parameters:
+* getVoter(address _addr): returns the voter information for a given address.
+* getOneProposal(uint _id): returns a single proposal from the proposalsMapping based on its ID.
 
-_addr: Address of the voter to retrieve information for.
+### Registration
 
-#### Returns:
+* addVoter(address _addr): registers a new voter by adding their address to the list of voters.
+* addProposal(string calldata _desc): adds a new proposal to the proposalsMapping.
 
-Voter information including registration status, vote status, and voted proposal ID.
+### Vote
 
-### Getter - getOneProposal
+setVote(uint _id): allows a registered voter to vote for a proposal with a given ID.
 
-```solidity
-function getOneProposal(uint _id) external onlyVoters view returns (Proposal memory)
-```
+### State
 
-Returns a single proposal from the proposalsArray based on its ID.
-
-#### Parameters:
-
-_id: ID of the proposal to retrieve.
-
-#### Returns:
-
-Proposal object containing all of its details.
-
-### Registration - addVoter
-
-
-``` solidity
-function addVoter(address _addr) external onlyOwner
-```
-Registers a new voter by adding their address to the list of voters.
-
-#### Requirements:
-
-The workflow status must be "RegisteringVoters".
-The voter must not already be registered.
-
-#### Parameters:
-
-_addr: Address of the voter to register.
-
-#### Events:
-
-VoterRegistered: emitted when a new voter is registered.
-
-
-### Registration - addProposal
-
-```solidity
-function addProposal(string calldata _desc) external onlyVoters
-```
-
-Adds a new proposal to the proposals array.
-
-#### Requirements:
-
-The workflow status must be set to ProposalsRegistrationStarted.
-The proposal description cannot be an empty string.
-Only registered voters can add a proposal.
-
-#### Parameters:
-
-_desc: String representing the proposal's description.
-
-#### Events:
-
-ProposalRegistered: emitted when a new proposal is added to the proposals array.
-
-### Voting - setVote
-
-```solidity
-function setVote(uint _id) external onlyVoters
-```
-Allows a registered voter to vote for a proposal with a given ID.
-
-#### Requirements:
-
-Voting session must have started.
-The voter must not have voted before.
-The proposal
-
-
+* startProposalsRegistering(): allows the owner to start the proposals registration process.
+* endProposalsRegistering(): ends the proposals registration period.
+* startVotingSession(): starts the voting session.
+* endVotingSession(): ends the voting session and updates the workflow status to VotingSessionEnded.
 
