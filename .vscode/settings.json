@@ -1,0 +1,36 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  // For JSONC, like this file, we want to format on save.
+  "[jsonc][html][css]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.associations": {
+    ".env*": "dotenv"
+  },
+  "vsicons.associations.files": [
+    {
+      "icon": "tsconfig",
+      "extensions": ["tsconfig.build.json", "tsconfig.paths.json"],
+      "filename": true
+    },
+    {
+      "icon": "todo",
+      "extensions": ["TODO.md"],
+      "filename": true
+    },
+    {
+      "icon": "docker",
+      "extensions": ["docker-compose.build.yml"],
+      "filename": true
+    }
+  ]
+}

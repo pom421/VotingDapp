@@ -7,8 +7,10 @@ node_modules
 
 # Production
 build
-client/src/contracts
-client/*/src/contracts
+# client/src/contracts
+# client/*/src/contracts
+client/package-lock.json
+client/yarn.lock
 
 # Testing
 coverage
@@ -19,9 +21,6 @@ coverage
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Editor
-.vscode
 
 # Misc.
 .DS_Store

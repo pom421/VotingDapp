@@ -1,25 +1,23 @@
-import { EthProvider } from "./contexts/EthContext";
-import Intro from "./components/Intro/";
-import Setup from "./components/Setup";
-import Demo from "./components/Demo";
-import Footer from "./components/Footer";
+import { EthProvider } from "./contexts/EthContext"
+// import { DebugInfo } from "./components/DebugInfo"
+// import { DEBUG } from "./utils/constants"
+import { ChakraProvider } from "@chakra-ui/react"
+import { MainContent } from "./components/MainContent"
+import { MainContextProvider } from "./contexts/MainContext"
 
 function App() {
   return (
     <EthProvider>
-      <div id="App">
-        <div className="container">
-          <Intro />
-          <hr />
-          <Setup />
-          <hr />
-          <Demo />
-          <hr />
-          <Footer />
+      <ChakraProvider>
+        <div id="App">
+          {/* {DEBUG && <DebugInfo />} */}
+          <MainContextProvider>
+            <MainContent />
+          </MainContextProvider>
         </div>
-      </div>
+      </ChakraProvider>
     </EthProvider>
-  );
+  )
 }
 
-export default App;
+export default App
