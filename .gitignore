@@ -9,6 +9,8 @@ node_modules
 build
 # client/src/contracts
 # client/*/src/contracts
+client/package-lock.json
+client/yarn.lock
 
 # Testing
 coverage
