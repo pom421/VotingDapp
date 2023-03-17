@@ -2,14 +2,20 @@ module.exports = {
 
   mocha: {
     reporter: 'eth-gas-reporter',
-    reporterOptions: {
-      currency: 'ETH',
+    reporterOptions : { 
+      currency: 'USD',
       gasPrice: 1,
       showTimeSpent: true,
-      //outputFile: './gas-report.txt', // Optionnel, si vous voulez enregistrer le rapport dans un fichier
     }
+    // reporter: 'eth-gas-reporter',
+    // reporterOptions: {
+    //   currency: 'ETH',
+    //   gasPrice: 1,
+    //   showTimeSpent: true,
+      //outputFile: './gas-report.txt', // Optionnel, si vous voulez enregistrer le rapport dans un fichier
   }
 };
+
 
 // mocha: {
 //   reporter: 'eth-gas-reporter',
