@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react"
 import { useEth } from "./EthContext"
+import uniqBy from "lodash/uniqBy"
 
 const eventName = "VoterRegistered"
 
-const getVoters = async ({ contract, fromBlock, toBlock }) => {
+const getVoters = async ({ contract, fromBlock }) => {
   const events = await contract.getPastEvents(eventName, {
     fromBlock,
-    toBlock,
-    // toBlock: "latest",
+    toBlock: "latest",
   })
 
   return events.map((event) => ({ voterAddress: event.returnValues.voterAddress }))
@@ -21,15 +21,15 @@ export function useEventVoter() {
   const [voters, setVoters] = useState([])
   const [subscriptionId, setSubscriptionId] = useState()
 
-  const [isLoaded, setIsLoaded] = useState(false)
-
   useEffect(() => {
     async function run() {
-      setIsLoaded(true)
       const currentBlock = await web3.eth.getBlockNumber()
 
       // Load with past events of VoterRegistered.
-      setVoters(await getVoters({ contract, fromBlock: deployTransaction.blockNumber, toBlock: currentBlock - 1 }))
+      const initialVoters = await getVoters({
+        contract,
+        fromBlock: deployTransaction.blockNumber,
+      })
 
       // Load with new events of VoterRegistered.
       const listener = await contract.events[eventName]({
@@ -43,7 +43,12 @@ export function useEventVoter() {
         })
         .on("data", (event) => {
           console.debug("Ajout de votant", event)
-          setVoters((voters) => [...voters, { voterAddress: event.returnValues.voterAddress }])
+          const uniqueVoters = uniqBy(
+            [...initialVoters, { voterAddress: event.returnValues.voterAddress }],
+            (element) => element.voterAddress,
+          )
+
+          setVoters(uniqueVoters)
         })
 
       return () => {
@@ -52,7 +57,7 @@ export function useEventVoter() {
       }
     }
 
-    if (contract && !isLoaded) run()
+    if (contract) run()
   }, [contract])
 
   return { voters }
