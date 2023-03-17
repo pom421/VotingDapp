@@ -31,7 +31,5 @@ export const useMainContext = () => {
   const values = useContext(MainContext)
   if (!values) throw new Error("A MainContext provider must be used")
 
-  console.log("useMainContext: ", JSON.stringify(values, null, 2))
-
   return values
 }

@@ -22,6 +22,9 @@ import {
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from "@chakra-ui/icons"
 import { useEth } from "../contexts/EthContext"
 import { useMainContext } from "../contexts/MainContext"
+import { ALL_STATUS } from "../utils/constants"
+import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
+import { useEventVoter } from "../contexts/useEventVoter"
 
 const Links = ["Accueil", "Dashboard"]
 
@@ -48,9 +51,13 @@ export function Layout({ children }) {
   const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const {
-    state: { networkName, connectedUser, workflowStatus },
+    state: { networkName, connectedUser, owner },
   } = useEth()
+  const { voters } = useEventVoter()
+  const workflowStatus = useEventWorkflowStatus()
   const { setStep } = useMainContext()
+
+  const userStatus = connectedUser === owner ? "Propriétaire" : voters.includes(connectedUser) ? "Votant" : "Non votant"
 
   return (
     <>
@@ -86,8 +93,12 @@ export function Layout({ children }) {
                 <Box ml="3">
                   <Text>
                     {sumupAddress(connectedUser)}{" "}
-                    <Badge fontSize="sm" colorScheme="green" ml="1">
-                      Voter
+                    <Badge
+                      fontSize="sm"
+                      colorScheme={userStatus === "Propriétaire" ? "blue" : userStatus === "Votant" ? "green" : "red"}
+                      ml="1"
+                    >
+                      {userStatus}
                     </Badge>
                   </Text>
 
@@ -123,7 +134,7 @@ export function Layout({ children }) {
       <Stack mt="8" maxW="980" mx="auto" gap="4">
         <HStack justifyContent="right">
           <Badge fontSize="lg" colorScheme="red">
-            {workflowStatus}
+            {ALL_STATUS[workflowStatus]}
           </Badge>
         </HStack>
         {children}

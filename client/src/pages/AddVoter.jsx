@@ -19,6 +19,9 @@ import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { useEventVoter } from "../contexts/useEventVoter"
 
+// TODO: l'ajout ne se passe plus bien mais a marché une première fois (avant les toasts et le finally pour info). Reset du compte dans MetaMast?
+// Aussi, quand je quite la page, le un
+
 export const AddVoters = () => {
   const { voters } = useEventVoter()
   const [addressToAdd, setAddressToAdd] = useState("")
@@ -30,8 +33,6 @@ export const AddVoters = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    console.log("dans handleSubmit", connectedUser, contract)
 
     if (connectedUser && contract) {
       try {

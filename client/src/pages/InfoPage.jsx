@@ -4,7 +4,7 @@ import { useEth } from "../contexts/EthContext"
 
 export const InfoPage = () => {
   const {
-    state: { contractAddress, connectedUser, networkID, networkName, workflowStatus, transactionHash },
+    state: { connectedUser, contractAddress, networkID, networkName, owner, transactionHash, workflowStatus },
   } = useEth()
 
   return (
@@ -33,6 +33,10 @@ export const InfoPage = () => {
             <Tr>
               <Th>Adresse de contrat</Th>
               <Td>{contractAddress}</Td>
+            </Tr>
+            <Tr>
+              <Th>Propriétaire du contrat</Th>
+              <Td>{owner}</Td>
             </Tr>
             <Tr>
               <Th>transactionHash</Th>
