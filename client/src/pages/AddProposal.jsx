@@ -5,7 +5,6 @@ import {
   Heading,
   Input,
   InputGroup,
-  InputLeftElement,
   Table,
   TableContainer,
   Tbody,
@@ -16,17 +15,15 @@ import {
   useToast,
 } from "@chakra-ui/react"
 import { useState } from "react"
-import { BiUserPlus } from "react-icons/bi"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
-import { useEventVoter } from "../contexts/useEventVoter"
+import { useEventProposal } from "../contexts/useEventProposal"
 import { InfoPage } from "./InfoPage"
-import { WaitingMessage } from "./WaitingMessage"
 
-export const AddVoter = () => {
-  const { voters } = useEventVoter()
+export const AddProposal = () => {
+  const { proposals } = useEventProposal()
 
-  const [addressToAdd, setAddressToAdd] = useState("")
+  const [proposalToAdd, setProposalToAdd] = useState("")
   const toast = useToast()
 
   const {
@@ -38,10 +35,10 @@ export const AddVoter = () => {
 
     if (connectedUser && contract) {
       try {
-        console.debug("ajout de " + addressToAdd)
-        await contract.methods.addVoter(addressToAdd).send({ from: connectedUser })
+        console.debug("ajout de " + proposalToAdd)
+        await contract.methods.addProposal(proposalToAdd).send({ from: connectedUser })
         toast({
-          title: "Adresse ajoutée.",
+          title: "Proposition ajoutée.",
           description: "L'ajout s'est bien passé.",
           status: "success",
           duration: 5000,
@@ -55,14 +52,14 @@ export const AddVoter = () => {
           duration: 5000,
           isClosable: true,
         })
-        console.error("Error while adding voter", error)
+        console.error("Error while adding proposal", error)
       } finally {
-        setAddressToAdd("")
+        setProposalToAdd("")
       }
     }
   }
 
-  const startProposal = async () => {
+  const endProposal = async () => {
     if (!connectedUser || connectedUser !== owner) {
       toast({
         title: "Non autorisée",
@@ -76,9 +73,9 @@ export const AddVoter = () => {
 
     if (connectedUser && contract) {
       try {
-        await contract.methods.startProposalsRegistering().send({ from: connectedUser })
+        await contract.methods.endProposalsRegistering().send({ from: connectedUser })
       } catch (error) {
-        console.error("Error while starting proposal", error)
+        console.error("Error while ending proposal", error)
         toast({
           title: "Problème",
           description: "Impossible de mettre à jour le status sur la blockchain.",
@@ -90,59 +87,52 @@ export const AddVoter = () => {
     }
   }
 
-  if (connectedUser && connectedUser !== owner) {
-    return <WaitingMessage description="La phase de proposition n'a pas commencé." />
-  }
-
   return (
     <Layout>
       <Flex justifyContent="space-between">
         <Heading as="h2" size="lg" mb="16">
-          Liste des votants
+          Ajout des propositions
         </Heading>
         {connectedUser && connectedUser === owner && (
-          <Button leftIcon={<ArrowForwardIcon />} onClick={startProposal}>
-            Passer au début des propositions
+          <Button leftIcon={<ArrowForwardIcon />} onClick={endProposal}>
+            Terminer la phase de proposition
           </Button>
         )}
       </Flex>
-
-      <form onSubmit={handleSubmit}>
-        <InputGroup>
-          {/* eslint-disable-next-line react/no-children-prop */}
-          <InputLeftElement pointerEvents="none" children={<BiUserPlus color="gray.300" />} />
-          <Input
-            type="text"
-            placeholder="Ex: 0x80971420de16e80dc8D3ED228E5135EbdB407013"
-            onChange={(e) => setAddressToAdd(e.target.value)}
-            value={addressToAdd}
-          />
-          <Button type="submit" ml="4" mb="4">
-            Ajouter
-          </Button>
-        </InputGroup>
-      </form>
-
+      {connectedUser && connectedUser !== owner && (
+        <form onSubmit={handleSubmit}>
+          <InputGroup>
+            <Input
+              type="tel"
+              placeholder="Ex: Je mets ici ma proposition..."
+              onChange={(e) => setProposalToAdd(e.target.value)}
+              value={proposalToAdd}
+            />
+            <Button type="submit" ml="4" mb="4">
+              Ajouter
+            </Button>
+          </InputGroup>
+        </form>
+      )}
       <TableContainer>
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th># votant</Th>
-              <Th>Adresse</Th>
+              <Th># proposition</Th>
+              <Th>Proposition</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {voters &&
-              voters.map(({ voterAddress }, index) => (
-                <Tr key={voterAddress}>
+            {proposals &&
+              proposals.map(({ proposalId }, index) => (
+                <Tr key={proposalId}>
                   <Td>{index + 1}</Td>
-                  <Td>{voterAddress}</Td>
+                  <Td>{proposalId}</Td>
                 </Tr>
               ))}
           </Tbody>
         </Table>
       </TableContainer>
-
       <InfoPage />
     </Layout>
   )

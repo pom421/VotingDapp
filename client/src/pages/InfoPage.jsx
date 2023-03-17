@@ -1,14 +1,16 @@
 import { Heading, Table, TableContainer, Tbody, Td, Th, Tr } from "@chakra-ui/react"
-import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
+import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
+import { ALL_STATUS } from "../utils/constants"
 
 export const InfoPage = () => {
   const {
-    state: { connectedUser, contractAddress, networkID, networkName, owner, transactionHash, workflowStatus },
+    state: { connectedUser, contractAddress, networkID, networkName, owner, transactionHash },
   } = useEth()
+  const workflowStatus = useEventWorkflowStatus()
 
   return (
-    <Layout>
+    <>
       <Heading as="h2" size="lg" mb="16">
         Informations
       </Heading>
@@ -27,8 +29,8 @@ export const InfoPage = () => {
               </Td>
             </Tr>
             <Tr>
-              <Th>Worklow statut</Th>
-              <Td>{workflowStatus}</Td>
+              <Th>Workflow statut</Th>
+              <Td>{ALL_STATUS[workflowStatus]}</Td>
             </Tr>
             <Tr>
               <Th>Adresse de contrat</Th>
@@ -45,6 +47,6 @@ export const InfoPage = () => {
           </Tbody>
         </Table>
       </TableContainer>
-    </Layout>
+    </>
   )
 }

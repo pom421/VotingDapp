@@ -1,38 +1,38 @@
 import { useEth } from "../contexts/EthContext"
-// import { useMainContext } from "../contexts/MainContext"
 import { useEventVoter } from "../contexts/useEventVoter"
 import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
-import { AddVoters } from "../pages/AddVoter"
-import { InfoPage } from "../pages/InfoPage"
+import { AddProposal } from "../pages/AddProposal"
+import { AddVoter } from "../pages/AddVoter"
 import { NotVoter } from "../pages/NotVoter"
-import { Hero } from "./Hero"
+import { ALL_STATUS } from "../utils/constants"
 
-export const PageIndex = {
-  hero: <Hero />,
-  "add-voter": <AddVoters />,
-  "info-page": <InfoPage />,
-  // "add-proposal": <AddProposal />,
-  // voting: <Voting />,
-  // result: <Result />,
-  "not-voter": <NotVoter />,
-  // "error-wallet": <ErrorWallet />,
-}
+const getPage = ({ workflowStatus, connectedUser, owner, voters }) => {
+  const typeUser = connectedUser === owner ? "owner" : voters.includes(connectedUser) ? "voter" : "not-voter"
 
-export const defaultPage = "add-voter"
+  if (typeUser === "not-voter") return <NotVoter />
 
-const getStep = ({ workflowStatus, connectedUser, owner, voters }) => {
-  switch (workflowStatus) {
-    case "0": {
-      // Registering voters
-      if (connectedUser === owner) {
-        return "add-voter"
-      } else if (voters.includes(connectedUser)) {
-        return "waiting-voting"
-      }
-      return "not-voter"
+  switch (ALL_STATUS[workflowStatus]) {
+    case "Ajout des votants": {
+      return <AddVoter />
     }
+    case "Début des propositions": {
+      return <AddProposal />
+    }
+    // case "Fin des propositions": {
+    //   return "end-proposal"
+    // }
+    // case "Début du vote": {
+    //   return "start-voting"
+    // }
+    // case "Fin du vote": {
+    //   return "end-voting"
+    // }
+    // case "Résultat du vote": {
+    //   return "show-result"
+    // }
+
     default: {
-      console.error("TBD", workflowStatus)
+      return <NotVoter />
     }
   }
 }
@@ -45,9 +45,7 @@ export const MainContent = () => {
   const { voters } = useEventVoter()
   const workflowStatus = useEventWorkflowStatus()
 
-  const step = getStep({ workflowStatus, connectedUser, owner, voters })
+  const addressesVoters = voters.map((element) => element.voterAddress)
 
-  console.debug("step", step)
-
-  return PageIndex[step || defaultPage]
+  return getPage({ workflowStatus, connectedUser, owner, voters: addressesVoters })
 }
