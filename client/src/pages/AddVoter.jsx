@@ -1,4 +1,3 @@
-import { BiUserPlus } from "react-icons/bi"
 import {
   Button,
   Heading,
@@ -15,6 +14,7 @@ import {
   useToast,
 } from "@chakra-ui/react"
 import { useState } from "react"
+import { BiUserPlus } from "react-icons/bi"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { useEventVoter } from "../contexts/useEventVoter"
@@ -24,6 +24,7 @@ import { useEventVoter } from "../contexts/useEventVoter"
 
 export const AddVoters = () => {
   const { voters } = useEventVoter()
+
   const [addressToAdd, setAddressToAdd] = useState("")
   const toast = useToast()
 
@@ -91,12 +92,13 @@ export const AddVoters = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {voters.map(({ voterAddress }, index) => (
-              <Tr key={voterAddress}>
-                <Td>{index + 1}</Td>
-                <Td>{voterAddress}</Td>
-              </Tr>
-            ))}
+            {voters &&
+              voters.map(({ voterAddress }, index) => (
+                <Tr key={index}>
+                  <Td>{index + 1}</Td>
+                  <Td>{voterAddress}</Td>
+                </Tr>
+              ))}
           </Tbody>
         </Table>
       </TableContainer>

@@ -19697,10 +19697,16 @@
       "links": {},
       "address": "0x60A2f27564CD43064FE2cD49B2fAB1751F1f95B6",
       "transactionHash": "0x8faf7caaa212cfa605d14546ecb0bb43164884a948b6e8191b4dc2efc763d5e1"
+    },
+    "1679064339612": {
+      "events": {},
+      "links": {},
+      "address": "0x8eE8BE0A05036a3CBC2d65a99a1c275f41101584",
+      "transactionHash": "0xd35b9b1bdd8a278d5d2592502aaebe5733458d41535c5a75d0c799bb57fef955"
     }
   },
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-03-17T09:08:51.138Z",
+  "updatedAt": "2023-03-17T14:45:47.612Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Alyra. Updated by Guilhain Averlant & Pierre Olivier Mauget",
