@@ -65,15 +65,15 @@ export function EthProvider({ children }) {
       dispatch({
         type: actions.init,
         data: {
-          contractAddress,
           artifact,
-          web3,
           connectedUser,
+          contract,
+          contractAddress,
           networkID,
           networkName,
-          contract,
-          workflowStatus,
           transactionHash,
+          workflowStatus,
+          web3,
         },
       })
     }
