@@ -39,7 +39,6 @@ const getStep = ({ workflowStatus, connectedUser, owner, voters }) => {
 
 // Routing component (routing light).
 export const MainContent = () => {
-  // const { step, setStep } = useMainContext()
   const {
     state: { owner, connectedUser },
   } = useEth()
