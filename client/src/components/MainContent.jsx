@@ -10,11 +10,6 @@ import { ALL_STATUS } from "../utils/constants"
 const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
   const typeUser = connectedUser === owner ? "owner" : isVoter ? "voter" : "not-voter"
 
-  console.log("connectedUser", connectedUser)
-  console.log("owner", owner)
-  console.log("isVoter", isVoter)
-  console.log("typeUser", typeUser)
-  console.log("workflowStatus", ALL_STATUS[workflowStatus])
   if (typeUser === "not-voter") return <NotVoter />
 
   switch (ALL_STATUS[workflowStatus]) {

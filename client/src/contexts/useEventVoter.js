@@ -38,7 +38,6 @@ export function useEventVoter() {
 
       listener
         .on("connected", (subscriptionId) => {
-          console.log("connected", subscriptionId)
           setSubscriptionId(subscriptionId)
         })
         .on("data", (event) => {

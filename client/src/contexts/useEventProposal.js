@@ -1,32 +1,32 @@
-import { useState, useEffect } from "react"
-import { useEth } from "./EthContext"
 import uniqBy from "lodash/uniqBy"
+import { useEffect, useState } from "react"
+import { VotingContractService } from "../services/VotingContractService"
+import { useEth } from "./EthContext"
 
 const eventName = "ProposalRegistered"
 
 const fetchDescriptionProposal = async ({ contract, connectedUser, proposalId }) => {
-  const proposalData = await contract.methods.getOneProposal(proposalId).call({ from: connectedUser })
-  console.log("proposalData", proposalData)
+  const proposalData = await VotingContractService.getInstance({ contract, connectedUser }).getOneProposal(proposalId)
   return { proposalId, description: proposalData.description }
 }
 
-export const getAllProposals = async ({ contract, from, connectedUser }) => {
-  const proposals = await getProposalsFromEvent({ contract, from })
-
-  return await Promise.all(
-    proposals.map(
-      async (proposal) => await fetchDescriptionProposal({ contract, connectedUser, proposalId: proposal.proposalId }),
-    ),
-  )
-}
-
-export const getProposalsFromEvent = async ({ contract, fromBlock }) => {
+export const getProposalsFromEvent = async ({ contract }) => {
   const events = await contract.getPastEvents(eventName, {
     fromBlock: "earliest",
     toBlock: "latest",
   })
 
   return events.map((event) => ({ proposalId: event.returnValues.proposalId }))
+}
+
+export const getAllProposals = async ({ contract, connectedUser }) => {
+  const events = await VotingContractService.getInstance({ contract, connectedUser }).getPastEvents(eventName)
+
+  return await Promise.all(
+    events
+      .map((event) => event.returnValues.proposalId)
+      .map(async (proposalId) => await fetchDescriptionProposal({ contract, connectedUser, proposalId })),
+  )
 }
 
 export function useEventProposal() {
@@ -54,7 +54,6 @@ export function useEventProposal() {
 
       listener
         .on("connected", (subscriptionId) => {
-          console.log("connected", subscriptionId)
           setSubscriptionId(subscriptionId)
         })
         .on("data", (event) => {
