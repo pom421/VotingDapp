@@ -30,38 +30,37 @@ export const StartVoting = () => {
     if (connectedUser !== owner) run()
   }, [contract, deployTransaction.blockNumber, connectedUser])
 
-  // const handleVote = async (e) => {
-  //   e.preventDefault()
+  const handleVote = async (id) => {
+    if (connectedUser && contract) {
+      try {
+        await VotingContractService.getInstance({ contract, connectedUser }).setVote(id)
 
-  //   if (connectedUser && contract) {
-  //     try {
-  //       console.debug("ajout de " + proposalToAdd)
-  //       await contract.methods.StartVoting(proposalToAdd).send({ from: connectedUser })
+        // Refresh proposals.
+        const proposals = await getAllProposals({ contract, from: deployTransaction.blockNumber, connectedUser })
+        setProposals(proposals)
 
-  //       // Refresh proposals.
-  //       const proposals = await getAllProposals({ contract, from: deployTransaction.blockNumber, connectedUser })
-  //       setProposals(proposals)
-  //       toast({
-  //         title: "Proposition ajoutée.",
-  //         description: "L'ajout s'est bien passé.",
-  //         status: "success",
-  //         duration: 5000,
-  //         isClosable: true,
-  //       })
-  //     } catch (error) {
-  //       toast({
-  //         title: "Problème",
-  //         description: "L'ajout n'a pas pu être réalisé.",
-  //         status: "error",
-  //         duration: 5000,
-  //         isClosable: true,
-  //       })
-  //       console.error("Error while adding proposal", error)
-  //     } finally {
-  //       setProposalToAdd("")
-  //     }
-  //   }
-  // }
+        const voter = await VotingContractService.getInstance({ contract, connectedUser }).getVoter(connectedUser)
+        setVoter(voter)
+
+        toast({
+          title: "Succès",
+          description: "Votre vote a été pris en compte.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        })
+      } catch (error) {
+        toast({
+          title: "Problème",
+          description: "Le vote n'a pas pu être pris en compte.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        })
+        console.error("Error while voting", error)
+      }
+    }
+  }
 
   const endVoting = async () => {
     if (!connectedUser || connectedUser !== owner) {
@@ -111,21 +110,23 @@ export const StartVoting = () => {
                 <Tr>
                   <Th># proposition</Th>
                   <Th>Proposition</Th>
+                  <Th># vote</Th>
                   <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {proposals &&
-                  proposals.map(({ proposalId, description }, index) => (
+                  proposals.map(({ proposalId, description, voteCount }) => (
                     <Tr key={proposalId}>
-                      <Td>{index + 1}</Td>
+                      <Td>{proposalId}</Td>
                       <Td>{description}</Td>
+                      <Td>{voteCount}</Td>
                       <Td>
                         <Button
-                          disabled={voter && voter.hasVoted}
+                          isDisabled={voter && voter.hasVoted}
                           title={voter && voter.hasVoted && "Vous avez déjà voté"}
                           rightIcon={<BsHandThumbsUp />}
-                          // onClick={handleVote}
+                          onClick={() => handleVote(proposalId)}
                         >
                           Voter
                         </Button>

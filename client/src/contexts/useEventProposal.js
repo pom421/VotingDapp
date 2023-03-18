@@ -7,7 +7,7 @@ const eventName = "ProposalRegistered"
 
 const fetchDescriptionProposal = async ({ contract, connectedUser, proposalId }) => {
   const proposalData = await VotingContractService.getInstance({ contract, connectedUser }).getOneProposal(proposalId)
-  return { proposalId, description: proposalData.description }
+  return { proposalId, description: proposalData.description, voteCount: proposalData.voteCount }
 }
 
 export const getProposalsFromEvent = async ({ contract }) => {

@@ -30,7 +30,6 @@ export function useEventWorkflowStatus() {
       listener
         .on("connected", (subscriptionId) => setSubscriptionId(subscriptionId))
         .on("data", (event) => {
-          console.debug("Status change", event)
           setStatus(event.returnValues.newStatus)
         })
         .on("error", (err) => console.error("Error on listening event WorkflowStatusChange", err))

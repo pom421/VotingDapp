@@ -24,7 +24,6 @@ export class VotingContractService {
     } else if (this.INSTANCE.connectedUser !== connectedUser) {
       this.INSTANCE = new VotingContractService({ contract, connectedUser })
     }
-    console.log("INSTANCE", this.INSTANCE)
     return this.INSTANCE
   }
 
@@ -41,7 +40,7 @@ export class VotingContractService {
   }
 
   async getVoter(address) {
-    await this.contract.methods.getVoter(address).call({ from: this.connectedUser })
+    return await this.contract.methods.getVoter(address).call({ from: this.connectedUser })
   }
 
   async addVoter(voter) {
@@ -78,7 +77,7 @@ export class VotingContractService {
 
   async getPastEvents(eventName) {
     const events = await this.contract.getPastEvents(eventName, { fromBlock: 0, toBlock: "latest" })
-    console.log("getPastEvents for", eventName, events)
+    // console.log("getPastEvents for", eventName, events)
     return events
   }
 }
