@@ -1,6 +1,6 @@
 # Voting dapp
 
-dapp for DAO voting.
+dapp for DAO voting par Guilhain Averlant & Pierre-Olivier Mauguet.
 
 ## Installation
 
