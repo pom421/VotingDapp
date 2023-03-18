@@ -14,21 +14,36 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
-import { useEventProposal } from "../contexts/useEventProposal"
+import { getAllProposals } from "../contexts/useEventProposal"
 import { InfoPage } from "./InfoPage"
 
-export const AddProposal = () => {
-  const { proposals } = useEventProposal()
+// Voir comment récupérer l'event juste après un send, je suppose que c'est vachement plsu simple.
+// Pour voters, je pourrais utiliser getVoter. Pour les proposals, je pourrais utiliser getOneProposal. Et pareil pour les votes.
+// Donc je dois pouvoir limiter l'appel aux events past/current.
 
+export const AddProposal = () => {
+  const [proposals, setProposals] = useState([])
   const [proposalToAdd, setProposalToAdd] = useState("")
   const toast = useToast()
-
   const {
-    state: { connectedUser, contract, owner },
+    state: { connectedUser, contract, owner, deployTransaction },
   } = useEth()
+
+  // Fetch proposals when the contract changes.
+  useEffect(() => {
+    async function run() {
+      const from = deployTransaction.blockNumber
+      const proposals = await getAllProposals({ contract, from, connectedUser })
+
+      console.log("proposals xxx", proposals)
+      setProposals(proposals)
+    }
+
+    run()
+  }, [contract, deployTransaction.blockNumber, connectedUser])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -37,6 +52,10 @@ export const AddProposal = () => {
       try {
         console.debug("ajout de " + proposalToAdd)
         await contract.methods.addProposal(proposalToAdd).send({ from: connectedUser })
+
+        // Refresh proposals.
+        const proposals = await getAllProposals({ contract, from: deployTransaction.blockNumber, connectedUser })
+        setProposals(proposals)
         toast({
           title: "Proposition ajoutée.",
           description: "L'ajout s'est bien passé.",
@@ -124,10 +143,10 @@ export const AddProposal = () => {
           </Thead>
           <Tbody>
             {proposals &&
-              proposals.map(({ proposalId }, index) => (
+              proposals.map(({ proposalId, description }, index) => (
                 <Tr key={proposalId}>
                   <Td>{index + 1}</Td>
-                  <Td>{proposalId}</Td>
+                  <Td>{description}</Td>
                 </Tr>
               ))}
           </Tbody>
