@@ -1,31 +1,3 @@
-module.exports = {
-
-  mocha: {
-    reporter: 'eth-gas-reporter',
-    reporterOptions : { 
-      currency: 'USD',
-      gasPrice: 1,
-      showTimeSpent: true,
-    }
-    // reporter: 'eth-gas-reporter',
-    // reporterOptions: {
-    //   currency: 'ETH',
-    //   gasPrice: 1,
-    //   showTimeSpent: true,
-      //outputFile: './gas-report.txt', // Optionnel, si vous voulez enregistrer le rapport dans un fichier
-  }
-};
-
-
-// mocha: {
-//   reporter: 'eth-gas-reporter',
-//   reporterOptions: { 
-//     gasPrice:1,
-//     token:'ETH',
-//     showTimeSpent: true, // mettre à true pour avoir les temps
-//   }
-// }
-
 // Load .env file.
 require("dotenv").config();
 
@@ -114,7 +86,12 @@ module.exports = {
 
   // Set default mocha options here, use special reporters, etc.
   mocha: {
-    // timeout: 100000
+    reporter: 'eth-gas-reporter',
+    reporterOptions : {
+      currency: 'USD',
+      gasPrice: 1,
+      showTimeSpent: true,
+    }
   },
 
   // Configure your compilers
