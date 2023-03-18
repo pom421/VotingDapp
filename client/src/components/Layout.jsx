@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react"
 import { useEth } from "../contexts/EthContext"
 import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
-import { useIsConnectedUserAVoter } from "../contexts/useGetVoter"
+import { useConnectedUserIsVoter } from "../contexts/useGetVoter"
 import { InfoPage } from "../pages/InfoPage"
 import { ALL_STATUS, DEBUG } from "../utils/constants"
 
@@ -55,7 +55,7 @@ export function Layout({ children }) {
   } = useEth()
 
   const workflowStatus = useEventWorkflowStatus()
-  const isVoter = useIsConnectedUserAVoter()
+  const isVoter = useConnectedUserIsVoter()
 
   const userStatus = connectedUser === owner ? "Propriétaire" : isVoter ? "Votant" : "Non votant"
 

@@ -49,7 +49,7 @@ export class VotingContractService {
     return this.contract.methods.owner().call({ from: this.connectedUser })
   }
 
-  async getStep() {
+  async getWorkflowStatus() {
     return this.contract.methods.workflowStatus().call({ from: this.connectedUser })
   }
 
@@ -95,7 +95,6 @@ export class VotingContractService {
 
   async getPastEvents(eventName) {
     const events = await this.contract.getPastEvents(eventName, { fromBlock: 0, toBlock: "latest" })
-    // console.log("getPastEvents for", eventName, events)
     return events
   }
 
@@ -118,5 +117,12 @@ export class VotingContractService {
           return { proposalId, description: proposalData.description, voteCount: proposalData.voteCount }
         }),
     )
+  }
+
+  async isVoter(address) {
+    if (address === this.owner) return false // owner is not a voter.
+
+    const voter = await this.getVoter(address)
+    return voter && voter.isRegistered
   }
 }

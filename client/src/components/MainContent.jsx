@@ -1,7 +1,7 @@
 import { Hero } from "../components/Hero"
 import { useEth } from "../contexts/EthContext"
 import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
-import { useIsConnectedUserAVoter } from "../contexts/useGetVoter"
+import { useConnectedUserIsVoter } from "../contexts/useGetVoter"
 import { AddProposal } from "../pages/AddProposal"
 import { AddVoter } from "../pages/AddVoter"
 import { EndProposal } from "../pages/EndProposal"
@@ -42,14 +42,14 @@ const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
   }
 }
 
-// Routing component (routing light).
+// "Routing component"
 export const MainContent = () => {
   const {
     state: { owner, connectedUser },
   } = useEth()
 
   const workflowStatus = useEventWorkflowStatus()
-  const isVoter = useIsConnectedUserAVoter()
+  const isVoter = useConnectedUserIsVoter()
 
   return getPage({ workflowStatus, connectedUser, owner, isVoter })
 }
