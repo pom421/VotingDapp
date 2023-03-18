@@ -18,7 +18,7 @@ export function useEventProposal() {
     state: { contract, deployTransaction, web3 },
   } = useEth()
 
-  const [voters, setVoters] = useState([])
+  const [proposals, setProposals] = useState([])
   const [subscriptionId, setSubscriptionId] = useState()
 
   useEffect(() => {
@@ -43,16 +43,16 @@ export function useEventProposal() {
         })
         .on("data", (event) => {
           console.debug("Ajout de proposal", event)
-          const uniqueVoters = uniqBy(
+          const uniqueProposals = uniqBy(
             [...initialProposals, { proposalId: event.returnValues.proposalId }],
             (element) => element.proposalId,
           )
 
-          setVoters(uniqueVoters)
+          setProposals(uniqueProposals)
         })
 
       return () => {
-        console.debug("unsubscribe listener for add voter event")
+        console.debug("unsubscribe listener for add proposal event")
         listener.unsubscribe(subscriptionId)
       }
     }
@@ -60,5 +60,5 @@ export function useEventProposal() {
     if (contract) run()
   }, [contract])
 
-  return { voters }
+  return { proposals }
 }
