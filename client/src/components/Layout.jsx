@@ -1,30 +1,30 @@
+import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons"
 import {
-  Box,
-  Flex,
   Avatar,
-  HStack,
-  Link,
-  IconButton,
+  Badge,
+  Box,
   Button,
+  Flex,
+  Highlight,
+  HStack,
+  IconButton,
+  Link,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   MenuDivider,
-  useDisclosure,
-  useColorModeValue,
+  MenuItem,
+  MenuList,
   Stack,
   Text,
-  Badge,
-  Highlight,
   useColorMode,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react"
-import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from "@chakra-ui/icons"
 import { useEth } from "../contexts/EthContext"
 import { useMainContext } from "../contexts/MainContext"
-import { ALL_STATUS } from "../utils/constants"
 import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
-import { useEventVoter } from "../contexts/useEventVoter"
+import { useIsConnectedUserAVoter } from "../contexts/useGetVoter"
+import { ALL_STATUS } from "../utils/constants"
 
 const Links = []
 
@@ -53,11 +53,12 @@ export function Layout({ children }) {
   const {
     state: { networkName, connectedUser, owner },
   } = useEth()
-  const { voters } = useEventVoter()
+
   const workflowStatus = useEventWorkflowStatus()
   const { setStep } = useMainContext()
+  const isVoter = useIsConnectedUserAVoter()
 
-  const userStatus = connectedUser === owner ? "Propriétaire" : voters.includes(connectedUser) ? "Votant" : "Non votant"
+  const userStatus = connectedUser === owner ? "Propriétaire" : isVoter ? "Votant" : "Non votant"
 
   return (
     <>
