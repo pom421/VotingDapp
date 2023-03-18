@@ -56,12 +56,12 @@ export class VotingContractService {
     await this.contract.methods.setVote(id).send({ from: this.connectedUser })
   }
 
-  async startProposalRegistering() {
-    await this.contract.methods.startProposalRegistering().send({ from: this.connectedUser })
+  async startProposalsRegistering() {
+    await this.contract.methods.startProposalsRegistering().send({ from: this.connectedUser })
   }
 
-  async endProposalRegistering() {
-    await this.contract.methods.endProposalRegistering().send({ from: this.connectedUser })
+  async endProposalsRegistering() {
+    await this.contract.methods.endProposalsRegistering().send({ from: this.connectedUser })
   }
 
   async startVotingSession() {
@@ -77,8 +77,8 @@ export class VotingContractService {
   }
 
   async getPastEvents(eventName) {
-    const test = await this.contract.getPastEvents(eventName, { fromBlock: 0, toBlock: "latest" })
-    console.log("PAST EVENT RESULT FOR " + eventName, test)
-    return test
+    const events = await this.contract.getPastEvents(eventName, { fromBlock: 0, toBlock: "latest" })
+    console.log("getPastEvents for", eventName, events)
+    return events
   }
 }

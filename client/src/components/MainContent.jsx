@@ -4,7 +4,9 @@ import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
 import { useIsConnectedUserAVoter } from "../contexts/useGetVoter"
 import { AddProposal } from "../pages/AddProposal"
 import { AddVoter } from "../pages/AddVoter"
+import { EndProposal } from "../pages/EndProposal"
 import { NotVoter } from "../pages/NotVoter"
+import { StartVoting } from "../pages/StartVoting"
 import { ALL_STATUS } from "../utils/constants"
 
 const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
@@ -19,12 +21,12 @@ const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
     case "Début des propositions": {
       return <AddProposal />
     }
-    // case "Fin des propositions": {
-    //   return "end-proposal"
-    // }
-    // case "Début du vote": {
-    //   return "start-voting"
-    // }
+    case "Fin des propositions": {
+      return <EndProposal />
+    }
+    case "Début du vote": {
+      return <StartVoting />
+    }
     // case "Fin du vote": {
     //   return "end-voting"
     // }
