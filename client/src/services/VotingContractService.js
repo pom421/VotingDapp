@@ -1,3 +1,5 @@
+// MEMO data solidity
+// ------------------
 // struct Voter {
 //   bool isRegistered;
 //   bool hasVoted;
@@ -108,11 +110,6 @@ export class VotingContractService {
   async getProposalsFromPastEvents() {
     const events = await this.getPastEvents(EventName.ProposalRegistered)
 
-    // return await Promise.all(
-    //   events
-    //     .map((event) => event.returnValues.proposalId)
-    //     .map(async (proposalId) => await fetchDescriptionProposal({ contract, connectedUser, proposalId })),
-    // )
     return await Promise.all(
       events
         .map((event) => event.returnValues.proposalId)
@@ -121,12 +118,5 @@ export class VotingContractService {
           return { proposalId, description: proposalData.description, voteCount: proposalData.voteCount }
         }),
     )
-
-    // const fetchDescriptionProposal = async ({ contract, connectedUser, proposalId }) => {
-    //   const proposalData = await VotingContractService.getInstance({ contract, connectedUser }).getOneProposal(
-    //     proposalId,
-    //   )
-    //   return { proposalId, description: proposalData.description, voteCount: proposalData.voteCount }
-    // }
   }
 }
