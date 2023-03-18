@@ -5,6 +5,7 @@ import { useIsConnectedUserAVoter } from "../contexts/useGetVoter"
 import { AddProposal } from "../pages/AddProposal"
 import { AddVoter } from "../pages/AddVoter"
 import { EndProposal } from "../pages/EndProposal"
+import { EndVoting } from "../pages/EndVoting"
 import { NotVoter } from "../pages/NotVoter"
 import { StartVoting } from "../pages/StartVoting"
 import { ALL_STATUS } from "../utils/constants"
@@ -27,9 +28,9 @@ const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
     case "Début du vote": {
       return <StartVoting />
     }
-    // case "Fin du vote": {
-    //   return "end-voting"
-    // }
+    case "Fin du vote": {
+      return <EndVoting />
+    }
     // case "Résultat du vote": {
     //   return "show-result"
     // }
