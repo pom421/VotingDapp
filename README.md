@@ -2,6 +2,8 @@
 
 dapp for DAO voting par Guilhain Averlant & Pierre-Olivier Mauguet.
 
+Déploiement sur voting-dapp-sage.vercel.app.
+
 ## Installation
 
 ```shell
