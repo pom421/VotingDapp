@@ -1,5 +1,4 @@
 import { Alert, Box, Flex, Heading, Highlight, HStack, Stack, Text, useColorModeValue } from "@chakra-ui/react"
-import { InfoPage } from "./InfoPage"
 
 export const NotVoter = () => {
   return (
@@ -29,8 +28,6 @@ export const NotVoter = () => {
           }
         </Alert>
       </Stack>
-
-      <InfoPage />
     </>
   )
 }

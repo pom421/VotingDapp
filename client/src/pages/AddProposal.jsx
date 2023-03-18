@@ -1,5 +1,6 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons"
 import {
+  Alert,
   Button,
   Flex,
   Heading,
@@ -14,44 +15,45 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
-import { getAllProposals } from "../contexts/useEventProposal"
 import { VotingContractService } from "../services/VotingContractService"
-import { InfoPage } from "./InfoPage"
 
 export const AddProposal = () => {
   const [proposals, setProposals] = useState([])
   const [proposalToAdd, setProposalToAdd] = useState("")
   const toast = useToast()
   const {
-    state: { connectedUser, contract, owner, deployTransaction },
+    state: { connectedUser, contract, owner },
   } = useEth()
+
+  // Get proposals from past events and update the state.
+  const refreshProposals = useCallback(
+    async function run() {
+      const proposals = await VotingContractService.getInstance({
+        contract,
+        connectedUser,
+      }).getProposalsFromPastEvents()
+      setProposals(proposals)
+    },
+
+    [contract, connectedUser],
+  )
 
   // Fetch proposals when the contract changes.
   useEffect(() => {
-    async function run() {
-      const from = deployTransaction.blockNumber
-      const proposals = await getAllProposals({ contract, from, connectedUser })
-
-      setProposals(proposals)
-    }
-
-    run()
-  }, [contract, deployTransaction.blockNumber, connectedUser])
+    if (contract && connectedUser) refreshProposals()
+  }, [contract, connectedUser])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (connectedUser && contract) {
       try {
-        console.debug("ajout de " + proposalToAdd)
         await contract.methods.addProposal(proposalToAdd).send({ from: connectedUser })
+        await refreshProposals()
 
-        // Refresh proposals.
-        const proposals = await getAllProposals({ contract, from: deployTransaction.blockNumber, connectedUser })
-        setProposals(proposals)
         toast({
           title: "Proposition ajoutée.",
           description: "L'ajout s'est bien passé.",
@@ -114,6 +116,13 @@ export const AddProposal = () => {
           </Button>
         )}
       </Flex>
+      {connectedUser && connectedUser === owner && (
+        <Alert>
+          Les votants peuvent maintenant ajouter des propositions. Vous pouvez terminer la phase de proposition en
+          cliquant sur le bouton ci-dessus.
+        </Alert>
+      )}
+
       {connectedUser && connectedUser !== owner && (
         <>
           <form onSubmit={handleSubmit}>
@@ -150,7 +159,6 @@ export const AddProposal = () => {
           </TableContainer>
         </>
       )}
-      <InfoPage />
     </Layout>
   )
 }

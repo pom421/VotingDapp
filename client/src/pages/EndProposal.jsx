@@ -3,7 +3,6 @@ import { Alert, Button, Flex, Heading, useToast } from "@chakra-ui/react"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { VotingContractService } from "../services/VotingContractService"
-import { InfoPage } from "./InfoPage"
 
 export const EndProposal = () => {
   const {
@@ -53,8 +52,6 @@ export const EndProposal = () => {
       </Flex>
 
       <Alert>{"La phase de vote n'a pas encore commencé."}</Alert>
-
-      <InfoPage />
     </Layout>
   )
 }

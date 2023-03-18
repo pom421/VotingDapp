@@ -1,3 +1,19 @@
+// struct Voter {
+//   bool isRegistered;
+//   bool hasVoted;
+//   uint votedProposalId;
+// }
+
+// struct Proposal {
+//   string description;
+//   uint voteCount;
+// }
+
+// event VoterRegistered(address voterAddress);
+// event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
+// event ProposalRegistered(uint proposalId);
+// event Voted (address voter, uint proposalId);
+
 const EventName = {
   VoterRegistered: "VoterRegistered",
   WorkflowStatusChange: "WorkflowStatusChange",
@@ -28,19 +44,19 @@ export class VotingContractService {
   }
 
   async getOwner() {
-    return await this.contract.methods.owner().call({ from: this.connectedUser })
+    return this.contract.methods.owner().call({ from: this.connectedUser })
   }
 
   async getStep() {
-    return await this.contract.methods.workflowStatus().call({ from: this.connectedUser })
+    return this.contract.methods.workflowStatus().call({ from: this.connectedUser })
   }
 
   async getOneProposal(id) {
-    return await this.contract.methods.getOneProposal(id).call({ from: this.connectedUser })
+    return this.contract.methods.getOneProposal(id).call({ from: this.connectedUser })
   }
 
   async getVoter(address) {
-    return await this.contract.methods.getVoter(address).call({ from: this.connectedUser })
+    return this.contract.methods.getVoter(address).call({ from: this.connectedUser })
   }
 
   async addVoter(voter) {
@@ -79,5 +95,38 @@ export class VotingContractService {
     const events = await this.contract.getPastEvents(eventName, { fromBlock: 0, toBlock: "latest" })
     // console.log("getPastEvents for", eventName, events)
     return events
+  }
+
+  async getVotersFromPastEvents() {
+    const events = await this.getPastEvents(EventName.VoterRegistered)
+
+    return events.map((event) => ({
+      voterAddress: event.returnValues.voterAddress,
+    }))
+  }
+
+  async getProposalsFromPastEvents() {
+    const events = await this.getPastEvents(EventName.ProposalRegistered)
+
+    // return await Promise.all(
+    //   events
+    //     .map((event) => event.returnValues.proposalId)
+    //     .map(async (proposalId) => await fetchDescriptionProposal({ contract, connectedUser, proposalId })),
+    // )
+    return await Promise.all(
+      events
+        .map((event) => event.returnValues.proposalId)
+        .map(async (proposalId) => {
+          const proposalData = await this.getOneProposal(proposalId)
+          return { proposalId, description: proposalData.description, voteCount: proposalData.voteCount }
+        }),
+    )
+
+    // const fetchDescriptionProposal = async ({ contract, connectedUser, proposalId }) => {
+    //   const proposalData = await VotingContractService.getInstance({ contract, connectedUser }).getOneProposal(
+    //     proposalId,
+    //   )
+    //   return { proposalId, description: proposalData.description, voteCount: proposalData.voteCount }
+    // }
   }
 }

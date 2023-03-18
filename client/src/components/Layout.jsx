@@ -21,10 +21,10 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { useEth } from "../contexts/EthContext"
-import { useMainContext } from "../contexts/MainContext"
 import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
 import { useIsConnectedUserAVoter } from "../contexts/useGetVoter"
-import { ALL_STATUS } from "../utils/constants"
+import { InfoPage } from "../pages/InfoPage"
+import { ALL_STATUS, DEBUG } from "../utils/constants"
 
 const Links = []
 
@@ -55,7 +55,6 @@ export function Layout({ children }) {
   } = useEth()
 
   const workflowStatus = useEventWorkflowStatus()
-  const { setStep } = useMainContext()
   const isVoter = useIsConnectedUserAVoter()
 
   const userStatus = connectedUser === owner ? "Propriétaire" : isVoter ? "Votant" : "Non votant"
@@ -113,7 +112,6 @@ export function Layout({ children }) {
                   {colorMode === "light" ? <MoonIcon /> : <SunIcon />}&nbsp;
                   {colorMode === "light" ? "Thème sombre" : "Thème clair"}
                 </MenuItem>
-                <MenuItem onClick={() => setStep("info-page")}>Informations page</MenuItem>
                 <MenuDivider />
                 <MenuItem>Link 3</MenuItem>
               </MenuList>
@@ -140,6 +138,8 @@ export function Layout({ children }) {
         </HStack>
         {children}
       </Stack>
+
+      {DEBUG && <InfoPage />}
     </>
   )
 }

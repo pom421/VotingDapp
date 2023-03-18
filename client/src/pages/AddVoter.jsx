@@ -15,17 +15,15 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { BiUserPlus } from "react-icons/bi"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
-import { useEventVoter } from "../contexts/useEventVoter"
-import { InfoPage } from "./InfoPage"
+import { VotingContractService } from "../services/VotingContractService"
 import { WaitingMessage } from "./WaitingMessage"
 
 export const AddVoter = () => {
-  const { voters } = useEventVoter()
-
+  const [voters, setVoters] = useState([])
   const [addressToAdd, setAddressToAdd] = useState("")
   const toast = useToast()
 
@@ -33,13 +31,29 @@ export const AddVoter = () => {
     state: { connectedUser, contract, owner },
   } = useEth()
 
+  // Get voters from past events and update the state.
+  const refreshVoters = useCallback(
+    async function run() {
+      const voters = await VotingContractService.getInstance({ contract, connectedUser }).getVotersFromPastEvents()
+      setVoters(voters)
+    },
+
+    [contract, connectedUser],
+  )
+
+  // Fetch proposals when the contract changes.
+  useEffect(() => {
+    if (contract && connectedUser) refreshVoters()
+  }, [contract, connectedUser])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (connectedUser && contract) {
       try {
-        console.debug("ajout de " + addressToAdd)
         await contract.methods.addVoter(addressToAdd).send({ from: connectedUser })
+        await refreshVoters()
+
         toast({
           title: "Adresse ajoutée.",
           description: "L'ajout s'est bien passé.",
@@ -142,8 +156,6 @@ export const AddVoter = () => {
           </Tbody>
         </Table>
       </TableContainer>
-
-      <InfoPage />
     </Layout>
   )
 }

@@ -1,34 +1,47 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons"
 import { Button, Flex, Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import { BsHandThumbsUp } from "react-icons/bs"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
-import { getAllProposals } from "../contexts/useEventProposal"
 import { VotingContractService } from "../services/VotingContractService"
-import { InfoPage } from "./InfoPage"
-import { BsHandThumbsUp } from "react-icons/bs"
 
 export const StartVoting = () => {
   const [proposals, setProposals] = useState([])
-  const [voter, setVoter] = useState()
+  const [currentVoter, setCurrentVoter] = useState()
   const toast = useToast()
   const {
-    state: { connectedUser, contract, owner, deployTransaction },
+    state: { connectedUser, contract, owner },
   } = useEth()
+
+  // Get proposals from past events and update the state.
+  const refreshProposals = useCallback(
+    async function run() {
+      const proposals = await VotingContractService.getInstance({
+        contract,
+        connectedUser,
+      }).getProposalsFromPastEvents()
+      setProposals(proposals)
+    },
+
+    [contract, connectedUser],
+  )
+
+  const refreshVoter = useCallback(
+    async function run() {
+      const voter = await VotingContractService.getInstance({ contract, connectedUser }).getVoter(connectedUser)
+      setCurrentVoter(voter)
+    },
+    [contract, connectedUser],
+  )
 
   // Fetch proposals when the contract changes.
   useEffect(() => {
-    async function run() {
-      const from = deployTransaction.blockNumber
-      const proposals = await getAllProposals({ contract, from, connectedUser })
-      const voter = await VotingContractService.getInstance({ contract, connectedUser }).getVoter(connectedUser)
-
-      setProposals(proposals)
-      setVoter(voter)
+    if (contract && connectedUser) {
+      refreshProposals()
+      refreshVoter()
     }
-
-    if (connectedUser !== owner) run()
-  }, [contract, deployTransaction.blockNumber, connectedUser])
+  }, [contract, connectedUser])
 
   const handleVote = async (id) => {
     if (connectedUser && contract) {
@@ -36,11 +49,10 @@ export const StartVoting = () => {
         await VotingContractService.getInstance({ contract, connectedUser }).setVote(id)
 
         // Refresh proposals.
-        const proposals = await getAllProposals({ contract, from: deployTransaction.blockNumber, connectedUser })
-        setProposals(proposals)
+        await refreshProposals()
 
-        const voter = await VotingContractService.getInstance({ contract, connectedUser }).getVoter(connectedUser)
-        setVoter(voter)
+        // Refresh voter.
+        await refreshVoter()
 
         toast({
           title: "Succès",
@@ -123,8 +135,8 @@ export const StartVoting = () => {
                       <Td>{voteCount}</Td>
                       <Td>
                         <Button
-                          isDisabled={voter && voter.hasVoted}
-                          title={voter && voter.hasVoted && "Vous avez déjà voté"}
+                          isDisabled={currentVoter && currentVoter.hasVoted}
+                          title={currentVoter && currentVoter.hasVoted ? "Vous avez déjà voté" : ""}
                           rightIcon={<BsHandThumbsUp />}
                           onClick={() => handleVote(proposalId)}
                         >
@@ -138,7 +150,6 @@ export const StartVoting = () => {
           </TableContainer>
         </>
       )}
-      <InfoPage />
     </Layout>
   )
 }

@@ -3,7 +3,6 @@ import { Alert, Button, Flex, Heading, useToast } from "@chakra-ui/react"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { VotingContractService } from "../services/VotingContractService"
-import { InfoPage } from "./InfoPage"
 
 export const EndVoting = () => {
   const {
@@ -53,8 +52,6 @@ export const EndVoting = () => {
       </Flex>
 
       <Alert>{"La phase de vote est terminé."}</Alert>
-
-      <InfoPage />
     </Layout>
   )
 }
