@@ -3,9 +3,9 @@ import { useEth } from "./EthContext"
 
 const eventName = "WorkflowStatusChange"
 
-const getStatus = async (account, contract) => {
-  if (account && contract) {
-    const status = await contract.methods.workflowStatus().call({ from: account })
+const getStatus = async (connectedUser, contract) => {
+  if (connectedUser && contract) {
+    const status = await contract.methods.workflowStatus().call({ from: connectedUser })
     return status
   }
 }

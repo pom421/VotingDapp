@@ -1,14 +1,20 @@
+import { Hero } from "../components/Hero"
 import { useEth } from "../contexts/EthContext"
-import { useEventVoter } from "../contexts/useEventVoter"
 import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
+import { useIsConnectedUserAVoter } from "../contexts/useGetVoter"
 import { AddProposal } from "../pages/AddProposal"
 import { AddVoter } from "../pages/AddVoter"
 import { NotVoter } from "../pages/NotVoter"
 import { ALL_STATUS } from "../utils/constants"
 
-const getPage = ({ workflowStatus, connectedUser, owner, voters }) => {
-  const typeUser = connectedUser === owner ? "owner" : voters.includes(connectedUser) ? "voter" : "not-voter"
+const getPage = ({ workflowStatus, connectedUser, owner, isVoter, contract }) => {
+  const typeUser = connectedUser === owner ? "owner" : isVoter ? "voter" : "not-voter"
 
+  console.log("connectedUser", connectedUser)
+  console.log("owner", owner)
+  console.log("isVoter", isVoter)
+  console.log("typeUser", typeUser)
+  console.log("workflowStatus", ALL_STATUS[workflowStatus])
   if (typeUser === "not-voter") return <NotVoter />
 
   switch (ALL_STATUS[workflowStatus]) {
@@ -32,7 +38,7 @@ const getPage = ({ workflowStatus, connectedUser, owner, voters }) => {
     // }
 
     default: {
-      return <NotVoter />
+      return <Hero />
     }
   }
 }
@@ -40,12 +46,11 @@ const getPage = ({ workflowStatus, connectedUser, owner, voters }) => {
 // Routing component (routing light).
 export const MainContent = () => {
   const {
-    state: { owner, connectedUser },
+    state: { owner, connectedUser, contract },
   } = useEth()
-  const { voters } = useEventVoter()
+
   const workflowStatus = useEventWorkflowStatus()
+  const isVoter = useIsConnectedUserAVoter()
 
-  const addressesVoters = voters.map((element) => element.voterAddress)
-
-  return getPage({ workflowStatus, connectedUser, owner, voters: addressesVoters })
+  return getPage({ workflowStatus, connectedUser, owner, isVoter, contract })
 }
