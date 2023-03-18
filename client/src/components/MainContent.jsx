@@ -7,7 +7,7 @@ import { AddVoter } from "../pages/AddVoter"
 import { NotVoter } from "../pages/NotVoter"
 import { ALL_STATUS } from "../utils/constants"
 
-const getPage = ({ workflowStatus, connectedUser, owner, isVoter, contract }) => {
+const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
   const typeUser = connectedUser === owner ? "owner" : isVoter ? "voter" : "not-voter"
 
   console.log("connectedUser", connectedUser)
@@ -46,11 +46,11 @@ const getPage = ({ workflowStatus, connectedUser, owner, isVoter, contract }) =>
 // Routing component (routing light).
 export const MainContent = () => {
   const {
-    state: { owner, connectedUser, contract },
+    state: { owner, connectedUser },
   } = useEth()
 
   const workflowStatus = useEventWorkflowStatus()
   const isVoter = useIsConnectedUserAVoter()
 
-  return getPage({ workflowStatus, connectedUser, owner, isVoter, contract })
+  return getPage({ workflowStatus, connectedUser, owner, isVoter })
 }
