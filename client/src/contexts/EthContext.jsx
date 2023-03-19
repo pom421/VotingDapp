@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useReducer } from "react"
 import Web3 from "web3"
+import { VotingContractService } from "../services/VotingContractService"
 import { NETWORKS } from "../utils/constants"
 
 export const EthContext = createContext()
@@ -33,14 +34,6 @@ const reducer = (state, action) => {
   }
 }
 
-export { actions, initialState, reducer }
-
-const getOwner = async (account, contract) => {
-  if (account && contract) {
-    return await contract.methods.owner().call({ from: account })
-  }
-}
-
 export function EthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -60,7 +53,7 @@ export function EthProvider({ children }) {
       try {
         contract = new web3.eth.Contract(abi, contractAddress)
         deployTransaction = await web3.eth.getTransaction(transactionHash)
-        owner = await getOwner(connectedUser, contract)
+        owner = await VotingContractService.getInstance({ contract, connectedUser }).getOwner()
       } catch (err) {
         console.error(err)
       }
