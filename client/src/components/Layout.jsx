@@ -1,27 +1,32 @@
+import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons"
 import {
-  Box,
-  Flex,
   Avatar,
-  HStack,
-  Link,
-  IconButton,
+  Badge,
+  Box,
   Button,
+  Flex,
+  Highlight,
+  HStack,
+  IconButton,
+  Link,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   MenuDivider,
-  useDisclosure,
-  useColorModeValue,
+  MenuItem,
+  MenuList,
   Stack,
   Text,
-  Badge,
-  Highlight,
+  useColorMode,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react"
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons"
 import { useEth } from "../contexts/EthContext"
+import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
+import { useConnectedUserIsVoter } from "../web3-hooks/useConnectedUserIsVoter"
+import { InfoPage } from "../pages/InfoPage"
+import { ALL_STATUS, DEBUG } from "../utils/constants"
 
-const Links = ["Accueil", "Dashboard"]
+const Links = []
 
 const NavLink = ({ children }) => (
   <Link
@@ -43,10 +48,16 @@ const sumupAddress = (address) => {
 }
 
 export function Layout({ children }) {
+  const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const {
-    state: { networkName, connectedUser, workflowStatus },
+    state: { networkName, connectedUser, owner },
   } = useEth()
+
+  const { workflowStatus } = useWorkflowStatus()
+  const isVoter = useConnectedUserIsVoter()
+
+  const userStatus = connectedUser === owner ? "Propriétaire" : isVoter ? "Votant" : "Non votant"
 
   return (
     <>
@@ -82,8 +93,12 @@ export function Layout({ children }) {
                 <Box ml="3">
                   <Text>
                     {sumupAddress(connectedUser)}{" "}
-                    <Badge fontSize="sm" colorScheme="green" ml="1">
-                      Voter
+                    <Badge
+                      fontSize="sm"
+                      colorScheme={userStatus === "Propriétaire" ? "blue" : userStatus === "Votant" ? "green" : "red"}
+                      ml="1"
+                    >
+                      {userStatus}
                     </Badge>
                   </Text>
 
@@ -93,8 +108,10 @@ export function Layout({ children }) {
                 </Box>
               </Flex>
               <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
+                <MenuItem onClick={toggleColorMode}>
+                  {colorMode === "light" ? <MoonIcon /> : <SunIcon />}&nbsp;
+                  {colorMode === "light" ? "Thème sombre" : "Thème clair"}
+                </MenuItem>
                 <MenuDivider />
                 <MenuItem>Link 3</MenuItem>
               </MenuList>
@@ -116,11 +133,13 @@ export function Layout({ children }) {
       <Stack mt="8" maxW="980" mx="auto" gap="4">
         <HStack justifyContent="right">
           <Badge fontSize="lg" colorScheme="red">
-            {workflowStatus}
+            {ALL_STATUS[workflowStatus]}
           </Badge>
         </HStack>
         {children}
       </Stack>
+
+      {DEBUG && <InfoPage />}
     </>
   )
 }

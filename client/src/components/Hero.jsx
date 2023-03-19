@@ -1,9 +1,6 @@
 import { Box, Heading, Container, Text, Button, Stack, Icon, useColorModeValue, createIcon } from "@chakra-ui/react"
-import { useMainContext } from "../contexts/MainContext"
 
 export function Hero() {
-  const { setStep } = useMainContext()
-
   return (
     <>
       <Container maxW={"3xl"}>
@@ -27,7 +24,6 @@ export function Hero() {
               _hover={{
                 bg: "green.500",
               }}
-              onClick={() => setStep("layout")}
             >
               Commencer
             </Button>

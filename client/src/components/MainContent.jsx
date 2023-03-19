@@ -1,17 +1,55 @@
-import { useMainContext } from "../contexts/MainContext"
-import { AddVoters } from "../pages/AddVoter"
-import { Hero } from "./Hero"
+import { Hero } from "../components/Hero"
+import { useEth } from "../contexts/EthContext"
+import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
+import { useConnectedUserIsVoter } from "../web3-hooks/useConnectedUserIsVoter"
+import { AddProposal } from "../pages/AddProposal"
+import { AddVoter } from "../pages/AddVoter"
+import { EndProposal } from "../pages/EndProposal"
+import { EndVoting } from "../pages/EndVoting"
+import { NotVoter } from "../pages/NotVoter"
+import { ShowResult } from "../pages/ShowResult"
+import { StartVoting } from "../pages/StartVoting"
+import { ALL_STATUS } from "../utils/constants"
 
-export const PageIndex = {
-  hero: <Hero />,
-  layout: <AddVoters />,
+const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
+  const typeUser = connectedUser === owner ? "owner" : isVoter ? "voter" : "not-voter"
+
+  if (typeUser === "not-voter") return <NotVoter />
+
+  switch (ALL_STATUS[workflowStatus]) {
+    case "Ajout des votants": {
+      return <AddVoter />
+    }
+    case "Début des propositions": {
+      return <AddProposal />
+    }
+    case "Fin des propositions": {
+      return <EndProposal />
+    }
+    case "Début du vote": {
+      return <StartVoting />
+    }
+    case "Fin du vote": {
+      return <EndVoting />
+    }
+    case "Résultat du vote": {
+      return <ShowResult />
+    }
+
+    default: {
+      return <Hero />
+    }
+  }
 }
 
-export const defaultPage = "layout"
-
-// Routing component (routing light).
+// "Routing component"
 export const MainContent = () => {
-  const { step } = useMainContext()
+  const {
+    state: { owner, connectedUser },
+  } = useEth()
 
-  return PageIndex[step] || defaultPage
+  const { workflowStatus } = useWorkflowStatus()
+  const isVoter = useConnectedUserIsVoter()
+
+  return getPage({ workflowStatus, connectedUser, owner, isVoter })
 }

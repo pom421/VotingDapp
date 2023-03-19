@@ -1,11 +1,8 @@
-import React, { useReducer, useCallback, useEffect } from "react"
+import React, { createContext, useCallback, useContext, useEffect, useReducer } from "react"
 import Web3 from "web3"
-import { ALL_STATUS, NETWORKS } from "../utils/constants"
-import { useContext } from "react"
-import { createContext } from "react"
+import { NETWORKS } from "../utils/constants"
 
 export const EthContext = createContext()
-
 EthContext.displayName = "EthContext"
 
 const actions = {
@@ -14,11 +11,15 @@ const actions = {
 
 const initialState = {
   artifact: null,
-  web3: null,
-  userAdress: null,
+  contract: null,
+  connectedUser: null,
+  deployTransaction: null,
   networkName: null,
   networkID: null,
-  contract: null,
+  owner: null,
+  transactionHash: null,
+  userAdress: null,
+  web3: null,
   workflowStatus: null,
 }
 
@@ -34,10 +35,9 @@ const reducer = (state, action) => {
 
 export { actions, initialState, reducer }
 
-const getStatus = async (account, contract) => {
+const getOwner = async (account, contract) => {
   if (account && contract) {
-    const status = await contract.methods.workflowStatus().call({ from: account })
-    return ALL_STATUS[status]
+    return await contract.methods.owner().call({ from: account })
   }
 }
 
@@ -51,19 +51,34 @@ export function EthProvider({ children }) {
       const connectedUser = accounts[0]
       const networkID = await web3.eth.net.getId()
       const networkName = NETWORKS[networkID] || "Réseau inconnu"
+      const contractAddress = artifact.networks[networkID].address
+      const transactionHash = artifact.networks[networkID].transactionHash
+
       const { abi } = artifact
-      let address, contract, workflowStatus
+
+      let contract, owner, deployTransaction
       try {
-        address = artifact.networks[networkID].address
-        contract = new web3.eth.Contract(abi, address)
-        workflowStatus = await getStatus(connectedUser, contract)
+        contract = new web3.eth.Contract(abi, contractAddress)
+        deployTransaction = await web3.eth.getTransaction(transactionHash)
+        owner = await getOwner(connectedUser, contract)
       } catch (err) {
         console.error(err)
       }
 
       dispatch({
         type: actions.init,
-        data: { artifact, web3, connectedUser, networkID, networkName, contract, workflowStatus },
+        data: {
+          artifact,
+          connectedUser,
+          contract,
+          contractAddress,
+          deployTransaction,
+          networkID,
+          networkName,
+          owner,
+          transactionHash,
+          web3,
+        },
       })
     }
   }, [])
@@ -85,7 +100,7 @@ export function EthProvider({ children }) {
   useEffect(() => {
     const events = ["chainChanged", "accountsChanged"]
     const handleChange = () => {
-      console.log("la chain ou l'account a changé")
+      console.debug("la chain ou l'account a changé")
       init(state.artifact)
     }
 
@@ -94,27 +109,6 @@ export function EthProvider({ children }) {
       events.forEach((e) => window.ethereum.removeListener(e, handleChange))
     }
   }, [init, state.artifact])
-
-  useEffect(() => {
-    async function run() {
-      const currentBlock = await state.web3.eth.getBlockNumber()
-      const listener = await state.contract.events.WorkflowStatusChange({ fromBlock: currentBlock })
-
-      listener
-        .on("data", (event) => {
-          console.log("Changement de status", event)
-          dispatch({
-            type: actions.init,
-            data: { workflowStatus: ALL_STATUS[event.returnValues.newStatus] },
-          })
-        })
-        .on("error", (err) => console.error("Error on listening event WorkflowStatusChange", err))
-    }
-
-    if (state.web3 && state.contract) {
-      run()
-    }
-  }, [state.web3, state.contract])
 
   return (
     <EthContext.Provider
