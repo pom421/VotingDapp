@@ -4,7 +4,6 @@ import { BsHandThumbsUp } from "react-icons/bs"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { VotingContractService } from "../services/VotingContractService"
-import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
 import { useGetProposals } from "../web3-hooks/useGetProposals"
 import { useGetVoter } from "../web3-hooks/useGetVoter"
 
@@ -14,7 +13,6 @@ export const StartVoting = () => {
   } = useEth()
   const { currentVoter, refreshCurrentVoter } = useGetVoter()
   const { proposals, refreshProposals } = useGetProposals()
-  const { refreshWorkflowStatus } = useWorkflowStatus()
   const toast = useToast()
 
   const handleVote = async (id) => {
@@ -63,7 +61,6 @@ export const StartVoting = () => {
     if (connectedUser && contract) {
       try {
         await VotingContractService.getInstance({ contract, connectedUser }).endVotingSession()
-        await refreshWorkflowStatus()
       } catch (error) {
         console.error("Error while ending voting session", error)
         toast({

@@ -20,7 +20,6 @@ import { BiUserPlus } from "react-icons/bi"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { VotingContractService } from "../services/VotingContractService"
-import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
 import { useGetVoters } from "../web3-hooks/useGetVoters"
 import { WaitingMessage } from "./WaitingMessage"
 
@@ -29,7 +28,6 @@ export const AddVoter = () => {
     state: { connectedUser, contract, owner },
   } = useEth()
   const { voters, refreshVoters } = useGetVoters()
-  const { refreshWorkflowStatus } = useWorkflowStatus()
   const [addressToAdd, setAddressToAdd] = useState("")
   const toast = useToast()
 
@@ -78,7 +76,6 @@ export const AddVoter = () => {
     if (connectedUser && contract) {
       try {
         await VotingContractService.getInstance({ contract, connectedUser }).startProposalsRegistering()
-        await refreshWorkflowStatus()
       } catch (error) {
         console.error("Error while starting proposal", error)
         toast({

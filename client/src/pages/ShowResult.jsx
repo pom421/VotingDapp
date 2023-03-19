@@ -1,6 +1,5 @@
-import { Alert, Flex, Heading, HStack, Text } from "@chakra-ui/react"
+import { Alert, Flex, Heading } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
-import { BsPerson } from "react-icons/bs"
 import { Layout } from "../components/Layout"
 import { StatsCard } from "../components/StatsCard"
 import { useEth } from "../contexts/EthContext"
@@ -11,7 +10,11 @@ export const ShowResult = () => {
     state: { connectedUser, contract },
   } = useEth()
 
-  const [proposalData, setProposalData] = useState()
+  const [proposalData, setProposalData] = useState({
+    proposalId: 0,
+    description: "",
+    voteCount: 0,
+  })
 
   useEffect(() => {
     async function run() {
@@ -19,8 +22,6 @@ export const ShowResult = () => {
         contract,
         connectedUser,
       }).getWinningProposalId()
-
-      console.log("winningProposalId", winningProposalId)
 
       const winningProposal = await VotingContractService.getInstance({
         contract,
@@ -49,10 +50,7 @@ export const ShowResult = () => {
 
       <Alert>{"La phase de vote est terminé."}</Alert>
 
-      <HStack>
-        <StatsCard title={"Vote"} stat={proposalData?.voteCount} icon={<BsPerson size={"3em"} />} />
-        <Text>{proposalData?.description}</Text>
-      </HStack>
+      <StatsCard proposal={proposalData} />
     </Layout>
   )
 }

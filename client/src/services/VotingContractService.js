@@ -46,7 +46,7 @@ export class VotingContractService {
   }
 
   async getOwner() {
-    return this.contract.methods.owner().call({ from: this.connectedUser })
+    return await this.contract.methods.owner().call({ from: this.connectedUser })
   }
 
   async getWorkflowStatus() {
@@ -58,11 +58,11 @@ export class VotingContractService {
   }
 
   async getOneProposal(id) {
-    return this.contract.methods.getOneProposal(id).call({ from: this.connectedUser })
+    return await this.contract.methods.getOneProposal(id).call({ from: this.connectedUser })
   }
 
   async getVoter(address) {
-    return this.contract.methods.getVoter(address).call({ from: this.connectedUser })
+    return await this.contract.methods.getVoter(address).call({ from: this.connectedUser })
   }
 
   async addVoter(voter) {
@@ -102,6 +102,23 @@ export class VotingContractService {
     return events
   }
 
+  async getWorkflowStatusFromPastEvents() {
+    const events = await this.getPastEvents(EventName.WorkflowStatusChange)
+
+    return events.map((event) => ({
+      previousStatus: event.returnValues.previousStatus,
+      newStatus: event.returnValues.newStatus,
+    }))
+  }
+
+  async getLastWorkflowStatusFromPastEvents() {
+    const events = await this.getWorkflowStatusFromPastEvents()
+
+    if (!events.length) return 0
+
+    return events[events.length - 1].newStatus
+  }
+
   async getVotersFromPastEvents() {
     const events = await this.getPastEvents(EventName.VoterRegistered)
 
@@ -126,7 +143,12 @@ export class VotingContractService {
   async isVoter(address) {
     if (address === this.owner) return false // owner is not a voter.
 
-    const voter = await this.getVoter(address)
-    return voter && voter.isRegistered
+    try {
+      const voter = await this.getVoter(address)
+      return voter && voter.isRegistered
+    } catch (error) {
+      // Catch error if a non voter try this, return false
+      return false
+    }
   }
 }

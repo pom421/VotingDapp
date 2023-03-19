@@ -8,7 +8,7 @@ import { ShowResult } from "../pages/ShowResult"
 import { StartVoting } from "../pages/StartVoting"
 import { ALL_STATUS } from "../utils/constants"
 import { useConnectedUserIsVoter } from "../web3-hooks/useConnectedUserIsVoter"
-import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
+import { useWorkflowStatus } from "../web3-hooks/useWorkflowStatus"
 
 const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
   const typeUser = connectedUser === owner ? "owner" : isVoter ? "voter" : "not-voter"

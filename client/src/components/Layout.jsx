@@ -21,9 +21,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { useEth } from "../contexts/EthContext"
-import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
+import { useWorkflowStatus } from "../web3-hooks/useWorkflowStatus"
 import { useConnectedUserIsVoter } from "../web3-hooks/useConnectedUserIsVoter"
-import { InfoPage } from "../pages/InfoPage"
+import { InfoCard } from "./InfoCard"
 import { ALL_STATUS, DEBUG } from "../utils/constants"
 
 const Links = []
@@ -139,7 +139,7 @@ export function Layout({ children }) {
         {children}
       </Stack>
 
-      {DEBUG && <InfoPage />}
+      {DEBUG && <InfoCard />}
     </>
   )
 }
