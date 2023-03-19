@@ -37,7 +37,7 @@ export const AddProposal = () => {
 
     if (connectedUser && contract) {
       try {
-        await contract.methods.addProposal(proposalToAdd).send({ from: connectedUser })
+        await VotingContractService.getInstance({ contract, connectedUser }).addProposal(proposalToAdd)
         await refreshProposals()
 
         toast({

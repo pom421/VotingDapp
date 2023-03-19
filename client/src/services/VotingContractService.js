@@ -50,7 +50,7 @@ export class VotingContractService {
   }
 
   async getWorkflowStatus() {
-    return this.contract.methods.workflowStatus().call({ from: this.connectedUser })
+    return await this.contract.methods.workflowStatus().call({ from: this.connectedUser })
   }
 
   async getOneProposal(id) {
