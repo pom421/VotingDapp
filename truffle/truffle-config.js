@@ -75,7 +75,7 @@ module.exports = {
         ),
       network_id: 80001,
     },
-    
+
     // Useful for private networks
     // private: {
     //   provider: () => new HDWalletProvider(MNEMONIC, `https://network.io`),
@@ -86,7 +86,12 @@ module.exports = {
 
   // Set default mocha options here, use special reporters, etc.
   mocha: {
-    // timeout: 100000
+    reporter: 'eth-gas-reporter',
+    reporterOptions : {
+      currency: 'USD',
+      gasPrice: 1,
+      showTimeSpent: true,
+    }
   },
 
   // Configure your compilers
