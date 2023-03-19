@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { VotingContractService } from "../services/VotingContractService"
-import { useEth } from "./EthContext"
+import { useEth } from "../contexts/EthContext"
 
 export const useConnectedUserIsVoter = () => {
   const {

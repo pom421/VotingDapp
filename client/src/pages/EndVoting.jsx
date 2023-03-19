@@ -3,11 +3,13 @@ import { Alert, Button, Flex, Heading, useToast } from "@chakra-ui/react"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { VotingContractService } from "../services/VotingContractService"
+import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
 
 export const EndVoting = () => {
   const {
     state: { connectedUser, contract, owner },
   } = useEth()
+  const { refreshWorkflowStatus } = useWorkflowStatus()
   const toast = useToast()
 
   const endVoting = async () => {
@@ -25,6 +27,7 @@ export const EndVoting = () => {
     if (connectedUser && contract) {
       try {
         await VotingContractService.getInstance({ contract, connectedUser }).endVotingSession()
+        await refreshWorkflowStatus()
       } catch (error) {
         console.error("Error while ending voting", error)
         toast({

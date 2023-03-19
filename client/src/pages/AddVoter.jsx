@@ -15,36 +15,22 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react"
-import { useCallback, useEffect, useState } from "react"
+import { useState } from "react"
 import { BiUserPlus } from "react-icons/bi"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
-import { VotingContractService } from "../services/VotingContractService"
+import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
+import { useGetVoters } from "../web3-hooks/useGetVoters"
 import { WaitingMessage } from "./WaitingMessage"
 
 export const AddVoter = () => {
-  const [voters, setVoters] = useState([])
-  const [addressToAdd, setAddressToAdd] = useState("")
-  const toast = useToast()
-
   const {
     state: { connectedUser, contract, owner },
   } = useEth()
-
-  // Get voters from past events and update the state.
-  const refreshVoters = useCallback(
-    async function run() {
-      const voters = await VotingContractService.getInstance({ contract, connectedUser }).getVotersFromPastEvents()
-      setVoters(voters)
-    },
-
-    [contract, connectedUser],
-  )
-
-  // Fetch proposals when the contract changes.
-  useEffect(() => {
-    if (contract && connectedUser) refreshVoters()
-  }, [contract, connectedUser])
+  const { voters, refreshVoters } = useGetVoters()
+  const { refreshWorkflowStatus } = useWorkflowStatus()
+  const [addressToAdd, setAddressToAdd] = useState("")
+  const toast = useToast()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -91,6 +77,7 @@ export const AddVoter = () => {
     if (connectedUser && contract) {
       try {
         await contract.methods.startProposalsRegistering().send({ from: connectedUser })
+        await refreshWorkflowStatus()
       } catch (error) {
         console.error("Error while starting proposal", error)
         toast({

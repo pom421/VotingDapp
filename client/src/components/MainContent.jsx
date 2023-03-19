@@ -1,7 +1,7 @@
 import { Hero } from "../components/Hero"
 import { useEth } from "../contexts/EthContext"
-import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
-import { useConnectedUserIsVoter } from "../contexts/useGetVoter"
+import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
+import { useConnectedUserIsVoter } from "../web3-hooks/useConnectedUserIsVoter"
 import { AddProposal } from "../pages/AddProposal"
 import { AddVoter } from "../pages/AddVoter"
 import { EndProposal } from "../pages/EndProposal"
@@ -48,7 +48,7 @@ export const MainContent = () => {
     state: { owner, connectedUser },
   } = useEth()
 
-  const workflowStatus = useEventWorkflowStatus()
+  const { workflowStatus } = useWorkflowStatus()
   const isVoter = useConnectedUserIsVoter()
 
   return getPage({ workflowStatus, connectedUser, owner, isVoter })

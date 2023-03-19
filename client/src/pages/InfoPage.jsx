@@ -1,13 +1,13 @@
 import { Heading, Table, TableContainer, Tbody, Td, Th, Tr } from "@chakra-ui/react"
 import { useEth } from "../contexts/EthContext"
-import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
+import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
 import { ALL_STATUS } from "../utils/constants"
 
 export const InfoPage = () => {
   const {
     state: { connectedUser, contractAddress, networkID, networkName, owner, transactionHash },
   } = useEth()
-  const workflowStatus = useEventWorkflowStatus()
+  const { workflowStatus } = useWorkflowStatus()
 
   return (
     <>

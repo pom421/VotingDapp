@@ -1,47 +1,21 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons"
 import { Button, Flex, Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react"
-import { useCallback, useEffect, useState } from "react"
 import { BsHandThumbsUp } from "react-icons/bs"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { VotingContractService } from "../services/VotingContractService"
+import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
+import { useGetProposals } from "../web3-hooks/useGetProposals"
+import { useGetVoter } from "../web3-hooks/useGetVoter"
 
 export const StartVoting = () => {
-  const [proposals, setProposals] = useState([])
-  const [currentVoter, setCurrentVoter] = useState()
-  const toast = useToast()
   const {
     state: { connectedUser, contract, owner },
   } = useEth()
-
-  // Get proposals from past events and update the state.
-  const refreshProposals = useCallback(
-    async function run() {
-      const proposals = await VotingContractService.getInstance({
-        contract,
-        connectedUser,
-      }).getProposalsFromPastEvents()
-      setProposals(proposals)
-    },
-
-    [contract, connectedUser],
-  )
-
-  const refreshVoter = useCallback(
-    async function run() {
-      const voter = await VotingContractService.getInstance({ contract, connectedUser }).getVoter(connectedUser)
-      setCurrentVoter(voter)
-    },
-    [contract, connectedUser],
-  )
-
-  // Fetch proposals when the contract changes.
-  useEffect(() => {
-    if (contract && connectedUser) {
-      refreshProposals()
-      refreshVoter()
-    }
-  }, [contract, connectedUser])
+  const { currentVoter, refreshCurrentVoter } = useGetVoter()
+  const { proposals, refreshProposals } = useGetProposals()
+  const { refreshWorkflowStatus } = useWorkflowStatus()
+  const toast = useToast()
 
   const handleVote = async (id) => {
     if (connectedUser && contract) {
@@ -52,7 +26,7 @@ export const StartVoting = () => {
         await refreshProposals()
 
         // Refresh voter.
-        await refreshVoter()
+        await refreshCurrentVoter()
 
         toast({
           title: "Succès",
@@ -89,6 +63,7 @@ export const StartVoting = () => {
     if (connectedUser && contract) {
       try {
         await VotingContractService.getInstance({ contract, connectedUser }).endVotingSession()
+        await refreshWorkflowStatus()
       } catch (error) {
         console.error("Error while ending voting session", error)
         toast({

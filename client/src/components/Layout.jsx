@@ -21,8 +21,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { useEth } from "../contexts/EthContext"
-import { useEventWorkflowStatus } from "../contexts/useEventWorkflowStatus"
-import { useConnectedUserIsVoter } from "../contexts/useGetVoter"
+import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
+import { useConnectedUserIsVoter } from "../web3-hooks/useConnectedUserIsVoter"
 import { InfoPage } from "../pages/InfoPage"
 import { ALL_STATUS, DEBUG } from "../utils/constants"
 
@@ -54,7 +54,7 @@ export function Layout({ children }) {
     state: { networkName, connectedUser, owner },
   } = useEth()
 
-  const workflowStatus = useEventWorkflowStatus()
+  const { workflowStatus } = useWorkflowStatus()
   const isVoter = useConnectedUserIsVoter()
 
   const userStatus = connectedUser === owner ? "Propriétaire" : isVoter ? "Votant" : "Non votant"
