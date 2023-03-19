@@ -1,15 +1,14 @@
 import { Hero } from "../components/Hero"
 import { useEth } from "../contexts/EthContext"
-import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
-import { useConnectedUserIsVoter } from "../web3-hooks/useConnectedUserIsVoter"
 import { AddProposal } from "../pages/AddProposal"
 import { AddVoter } from "../pages/AddVoter"
 import { EndProposal } from "../pages/EndProposal"
-import { EndVoting } from "../pages/EndVoting"
 import { NotVoter } from "../pages/NotVoter"
 import { ShowResult } from "../pages/ShowResult"
 import { StartVoting } from "../pages/StartVoting"
 import { ALL_STATUS } from "../utils/constants"
+import { useConnectedUserIsVoter } from "../web3-hooks/useConnectedUserIsVoter"
+import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
 
 const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
   const typeUser = connectedUser === owner ? "owner" : isVoter ? "voter" : "not-voter"
@@ -30,9 +29,6 @@ const getPage = ({ workflowStatus, connectedUser, owner, isVoter }) => {
       return <StartVoting />
     }
     case "Fin du vote": {
-      return <EndVoting />
-    }
-    case "Résultat du vote": {
       return <ShowResult />
     }
 

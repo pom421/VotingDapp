@@ -20,12 +20,14 @@ export const ShowResult = () => {
         connectedUser,
       }).getWinningProposalId()
 
-      const proposals = await VotingContractService.getInstance({
+      console.log("winningProposalId", winningProposalId)
+
+      const winningProposal = await VotingContractService.getInstance({
         contract,
         connectedUser,
-      }).getProposals()
+      }).getOneProposal(winningProposalId)
 
-      const winningProposal = proposals.find((proposal) => proposal.id === winningProposalId)
+      console.log("winningProposal", winningProposal)
 
       setProposalData({
         proposalId: winningProposalId,
@@ -48,8 +50,8 @@ export const ShowResult = () => {
       <Alert>{"La phase de vote est terminé."}</Alert>
 
       <HStack>
-        <StatsCard title={"Vote"} stat={proposalData.voteCount} icon={<BsPerson size={"3em"} />} />
-        <Text>{proposalData.description}</Text>
+        <StatsCard title={"Vote"} stat={proposalData?.voteCount} icon={<BsPerson size={"3em"} />} />
+        <Text>{proposalData?.description}</Text>
       </HStack>
     </Layout>
   )

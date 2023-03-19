@@ -53,6 +53,10 @@ export class VotingContractService {
     return await this.contract.methods.workflowStatus().call({ from: this.connectedUser })
   }
 
+  async getWinningProposalId() {
+    return await this.contract.methods.winningProposalID().call({ from: this.connectedUser })
+  }
+
   async getOneProposal(id) {
     return this.contract.methods.getOneProposal(id).call({ from: this.connectedUser })
   }
