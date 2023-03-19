@@ -53,6 +53,12 @@ contract Voting is Ownable {
     
     // on peut faire un modifier pour les états
 
+
+    // Add role voter for owner
+    constructor() {
+        voters[msg.sender].isRegistered = true;
+    }
+
     // ::::::::::::: GETTERS ::::::::::::: //
 
     /*

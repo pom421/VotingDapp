@@ -1,28 +1,21 @@
-import { Box, Flex, Stat, StatLabel, StatNumber, useColorModeValue } from "@chakra-ui/react"
+import { Card, CardBody, CardFooter, CardHeader, Heading, HStack, Text } from "@chakra-ui/react"
 
-export const StatsCard = ({ title, stat, icon }) => {
+export const StatsCard = ({ proposal }) => {
+  const { proposalId, description, voteCount } = proposal
+
   return (
-    <Stat
-      px={{ base: 2, md: 4 }}
-      py={"5"}
-      shadow={"xl"}
-      border={"1px solid"}
-      borderColor={useColorModeValue("gray.800", "gray.500")}
-      rounded={"lg"}
-    >
-      <Flex justifyContent={"space-between"}>
-        <Box pl={{ base: 2, md: 4 }}>
-          <StatLabel fontWeight={"medium"} isTruncated>
-            {title}
-          </StatLabel>
-          <StatNumber fontSize={"2xl"} fontWeight={"medium"}>
-            {stat}
-          </StatNumber>
-        </Box>
-        <Box my={"auto"} color={useColorModeValue("gray.800", "gray.200")} alignContent={"center"}>
-          {icon}
-        </Box>
-      </Flex>
-    </Stat>
+    <HStack>
+      <Card>
+        <CardHeader>
+          <Heading size="md"> Proposition gagnante #{proposalId}</Heading>
+        </CardHeader>
+        <CardBody>
+          <Text>{description}</Text>
+        </CardBody>
+        <CardFooter>
+          <Text fontSize="2xl">{voteCount} votes</Text>
+        </CardFooter>
+      </Card>
+    </HStack>
   )
 }

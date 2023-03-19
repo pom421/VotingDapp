@@ -19,7 +19,7 @@ import { useState } from "react"
 import { BiUserPlus } from "react-icons/bi"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
-import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
+import { VotingContractService } from "../services/VotingContractService"
 import { useGetVoters } from "../web3-hooks/useGetVoters"
 import { WaitingMessage } from "./WaitingMessage"
 
@@ -28,7 +28,6 @@ export const AddVoter = () => {
     state: { connectedUser, contract, owner },
   } = useEth()
   const { voters, refreshVoters } = useGetVoters()
-  const { refreshWorkflowStatus } = useWorkflowStatus()
   const [addressToAdd, setAddressToAdd] = useState("")
   const toast = useToast()
 
@@ -37,7 +36,7 @@ export const AddVoter = () => {
 
     if (connectedUser && contract) {
       try {
-        await contract.methods.addVoter(addressToAdd).send({ from: connectedUser })
+        await VotingContractService.getInstance({ contract, connectedUser }).addVoter(addressToAdd)
         await refreshVoters()
 
         toast({
@@ -76,8 +75,7 @@ export const AddVoter = () => {
 
     if (connectedUser && contract) {
       try {
-        await contract.methods.startProposalsRegistering().send({ from: connectedUser })
-        await refreshWorkflowStatus()
+        await VotingContractService.getInstance({ contract, connectedUser }).startProposalsRegistering()
       } catch (error) {
         console.error("Error while starting proposal", error)
         toast({
@@ -93,6 +91,10 @@ export const AddVoter = () => {
 
   if (connectedUser && connectedUser !== owner) {
     return <WaitingMessage description="La phase de proposition n'a pas commencé." />
+  }
+
+  const isAlreadyRegistered = (address) => {
+    return voters.map((voter) => voter.voterAddress).includes(address)
   }
 
   return (
@@ -118,7 +120,13 @@ export const AddVoter = () => {
             onChange={(e) => setAddressToAdd(e.target.value)}
             value={addressToAdd}
           />
-          <Button type="submit" ml="4" mb="4">
+          <Button
+            type="submit"
+            ml="4"
+            mb="4"
+            isDisabled={isAlreadyRegistered(addressToAdd)}
+            title={isAlreadyRegistered(addressToAdd) ? "Cette adresse est déjà dans la liste des votants" : ""}
+          >
             Ajouter
           </Button>
         </InputGroup>

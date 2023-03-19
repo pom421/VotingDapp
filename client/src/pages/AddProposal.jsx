@@ -19,7 +19,6 @@ import { useState } from "react"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { VotingContractService } from "../services/VotingContractService"
-import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
 import { useGetProposals } from "../web3-hooks/useGetProposals"
 
 export const AddProposal = () => {
@@ -27,7 +26,6 @@ export const AddProposal = () => {
     state: { connectedUser, contract, owner },
   } = useEth()
   const { proposals, refreshProposals } = useGetProposals()
-  const { refreshWorkflowStatus } = useWorkflowStatus()
 
   const [proposalToAdd, setProposalToAdd] = useState("")
   const toast = useToast()
@@ -37,7 +35,7 @@ export const AddProposal = () => {
 
     if (connectedUser && contract) {
       try {
-        await contract.methods.addProposal(proposalToAdd).send({ from: connectedUser })
+        await VotingContractService.getInstance({ contract, connectedUser }).addProposal(proposalToAdd)
         await refreshProposals()
 
         toast({
@@ -77,7 +75,6 @@ export const AddProposal = () => {
     if (connectedUser && contract) {
       try {
         await VotingContractService.getInstance({ contract, connectedUser }).endProposalsRegistering()
-        await refreshWorkflowStatus()
       } catch (error) {
         console.error("Error while ending proposal", error)
         toast({

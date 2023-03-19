@@ -3,13 +3,11 @@ import { Alert, Button, Flex, Heading, useToast } from "@chakra-ui/react"
 import { Layout } from "../components/Layout"
 import { useEth } from "../contexts/EthContext"
 import { VotingContractService } from "../services/VotingContractService"
-import { useWorkflowStatus } from "../web3-hooks/useEventWorkflowStatus"
 
 export const EndProposal = () => {
   const {
     state: { connectedUser, contract, owner },
   } = useEth()
-  const { refreshWorkflowStatus } = useWorkflowStatus()
   const toast = useToast()
 
   const startVoting = async () => {
@@ -27,7 +25,6 @@ export const EndProposal = () => {
     if (connectedUser && contract) {
       try {
         await VotingContractService.getInstance({ contract, connectedUser }).startVotingSession()
-        await refreshWorkflowStatus()
       } catch (error) {
         console.error("Error while starting voting", error)
         toast({
