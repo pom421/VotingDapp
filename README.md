@@ -66,21 +66,21 @@ Aller sur https://sepolia-faucet.pk910.de/.
 
 ### Sécurité
 
-#### la faille
+#### La faille
 
-Pour des raisons de sécurité nous avons supprimé la function `tallyVotes` car elle présentait une faille de sécurité de 
-type DOS GAS LIMIT. Puisque si un attaquant publie un nombre important de `proposals` la boucle qui calcule les 
-résultats du vote peut atteindre la limite de gas autorisé par le réseau.
+Pour des raisons de sécurité, nous avons supprimé la function `tallyVotes` car elle présentait une faille de sécurité de 
+type DOS GAS LIMIT. Puisque si un attaquant publie un nombre important de `proposals`, la boucle qui calcule les 
+résultats du vote peut atteindre la limite de gas autorisée par le réseau.
 
-#### la solution
+#### La solution
 
-Pour combler cette faille de sécurité il a été décidé de déplacer le calcul de la `proposal` victorieuse dans la
-fonction `setVote`. Ainsi à chaque fois qu'un votant vote la variable `winningProposalID` est mise à jour en comparant
+Pour combler cette faille de sécurité, il a été décidé de déplacer le calcul de la `proposal` victorieuse dans la
+fonction `setVote`. Ainsi à chaque fois qu'un votant vote, la variable `winningProposalID` est mise à jour en comparant
 la valeur `voteCount` stockée dans la struct `Proposal`.
 
-##### les propsitions écartées et pourquoi 
+##### Les propsitions écartées et pourquoi 
 
-* Nous avons écarté la méthode de la _pagination_ car trop couteuse en gas et peu efficace dans la mesure où le décompte 
+* Nous avons écarté la méthode de la _pagination_ car trop coûteuse en gas et peu efficace dans la mesure où le décompte 
 peut se faire dans une autre fonction (en l'occurence ici `setVote`).
 * la méthode de la _limitation_ du nombre de `Proposal` ne nous parait pas pertinente, car rien ne justifie sur une 
 application de vote de limiter le nombre de candidatures.
@@ -89,19 +89,19 @@ application de vote de limiter le nombre de candidatures.
 
 La suppression de la fonction `tallyVotes` invite à faire certaines modifications.
 
-* L'étape `VotesTallied` de l'enum `WorkflowStatus` n'a plus de sens du coup elle a été supprimée.
-* Pour des raisons d'économies de gas nous avons stocké les `Proposal`  dans un `mapping` plutôt que dans un `array`.
+* L'étape `VotesTallied` de l'enum `WorkflowStatus` n'a plus de sens, elle a donc été supprimée.
+* Pour des raisons d'économie de gas, nous avons stocké les `Proposal`  dans un `mapping` plutôt que dans un `array`.
 Du coup on est obligé en contre partie d'ajouter une variable de type uint `proposalID` pour stocker l'identifiant de 
-chaque proposal (utile également dans les `require utilisés dans les fonction `setVote` et `getOneProposal`).
+chaque proposal (utile également dans les `require` utilisés dans les fonction `setVote` et `getOneProposal`).
 
-Quid : propsoal GENESIS ?
+Quid : proposal GENESIS ?
 
-On a gardé la notion de proposal GENESIS tel qu'implémenté  dans la version initiale du code.
+On a gardé la notion de proposal GENESIS tel qu'implémenté dans la version initiale du code.
 
 Vous trouverez ci-dessous les rapports de consomations de gas des sessions de tests de Voting.sol : 
-- Avant la correction de la faille de sécurité.
-- Aprés la correction de faille mais en gardant le stockage des proposals dans un array
-- Aprés la correction de la faille mais en stockant les proposals dans un mapping
+- avant la correction de la faille de sécurité.
+- aprés la correction de faille mais en gardant le stockage des proposals dans un array
+- aprés la correction de la faille mais en stockant les proposals dans un mapping
 
 #### Avant la correction de la faille
 
@@ -119,7 +119,7 @@ Vous trouverez ci-dessous les rapports de consomations de gas des sessions de te
 |  Voting                                  |           -  |          -  |  2 077 402  |      30.9 %  |
 
 
-#### Après la correction de la faille et stocakge des proposals dans un array
+#### Après la correction de la faille et stockage des proposals dans un array
 
 
 |  Contract    Method                     |  Min        |  Max         |  Avg        | # calls   |
@@ -135,7 +135,7 @@ Vous trouverez ci-dessous les rapports de consomations de gas des sessions de te
 
 
 
-#### Après la correction de la faille et stocakge des proposals dans un mapping
+#### Après la correction de la faille et stockage des proposals dans un mapping
 
 |  Contract   Method                    |  Min        | Max    |  Avg        | # calls  | 
 |---------------------------------------|-------------|--------|-------------|----------|
@@ -150,7 +150,7 @@ Vous trouverez ci-dessous les rapports de consomations de gas des sessions de te
 
 On observe que le stockage dans un mapping consomme moins de gas dans sa globalité.
 
-## Documentation technique
+## Documentation technique (générée à partir des commentaires NatSpec du code Solidity)
 
 
 This is a smart contract for conducting a voting process using blockchain technology. It allows voters to register, submit proposals, and vote on proposals. The voting process has multiple stages that are controlled by the contract owner. Voters can only vote once and can only vote on proposals that have been registered. The winning proposal is the one with the highest number of votes.
