@@ -60,7 +60,7 @@ PS: pour d'autres réseaux, ajouter la configuration dans truffle-config.js et l
 Aller sur https://sepolia-faucet.pk910.de/.
 
 
-## Sécurité et optimisation
+## Sécurité et optimisations
 
 ### Sécurité
 
@@ -83,8 +83,9 @@ peut se faire dans une autre fonction (en l'occurence ici `setVote`).
 * la méthode de la _limitation_ du nombre de `Proposal` ne nous parait pas pertinente, car rien ne justifie sur une 
 application de vote de limiter le nombre de candidatures.
 
-### Optimisation
+### Optimisations
 
+**Les optimisations suite à la suprression de TallyVotes**
 La suppression de la fonction `tallyVotes` invite à faire certaines modifications.
 
 * L'étape `VotesTallied` de l'enum `WorkflowStatus` n'a plus de sens du coup elle a été supprimée.
@@ -92,14 +93,19 @@ La suppression de la fonction `tallyVotes` invite à faire certaines modificatio
 Du coup on est obligé en contre partie d'ajouter une variable de type uint `proposalID` pour stocker l'identifiant de 
 chaque proposal (utile également dans les `require utilisés dans les fonction `setVote` et `getOneProposal`).
 
-Quid : propsoal GENESIS ?
+
+**Quid : propsoal GENESIS ?**
 
 On a gardé la notion de proposal GENESIS tel qu'implémenté  dans la version initiale du code.
+
+**Et la consomation en gas ?**
 
 Vous trouverez ci-dessous les rapports de consomations de gas des sessions de tests de Voting.sol : 
 - Avant la correction de la faille de sécurité.
 - Aprés la correction de faille mais en gardant le stockage des proposals dans un array
 - Aprés la correction de la faille mais en stockant les proposals dans un mapping
+- Après la correction de la faille et stockage des proposals dans un mapping et conversion des uint256 en uint64
+
 
 #### Avant la correction de la faille
 
@@ -148,9 +154,37 @@ Vous trouverez ci-dessous les rapports de consomations de gas des sessions de te
 
 On observe que le stockage dans un mapping consomme moins de gas dans sa globalité.
 
+
+#### Après la correction de la faille et stockage des proposals dans un mapping et conversion des uint256 en uint64
+
+Comme il a fallu créer une variable `uint proposalID` en pour stoker les identifiants de `Proposal`. Par conséquent 
+nous avons deux variables uint ce qui rend possible une petite optimisation en gas en restreignant la taille des `uint`
+(par défaut `uint256`) en `uint64` ce qui techniquement restreint le nombre de proposal à (2^64)-1 soit
+18446744073709551615 `proposals`ce qui nous semble raisonnable.
+
+Voici le résultat des tests en gas
+
+| Contract   Method                     | Min          | Max        |  Avg        | # calls | 
+|---------------------------------------|--------------|------------|-------------|---------|
+| Voting      addProposal               | 59941        | 77041      |      60865  | 37      |
+| Voting      addVoter                  | -            | -          |      50220  | 35      |
+| Voting      endProposalsRegistering   | -            | -          |      30577  | 37      |
+| Voting     endVotingSession           | -            | -          |      30599  | 36      |
+| Voting     setVote                    | 39956        | 62123      |      41093  | 39      |
+| Voting     startProposalsRegistering  | -            | -          |      72936  | 4       |
+| Voting     startVotingSession         | -            | -          |      30554  | 4       |
+| Voting                                | -            | -          |    2200063  | 32.7 %  |
+
+Nous observons une sur-consomation en gas cette option ne sera pas retenue.
+
+#### Conclusions des optimistations
+
+* un stockage en mapping des proposals est optmal
+* la conversion des uint en uint64 a un impact négatif sur la consommation du gas du smart contract.
+
 ## Documentation technique
 
-
+For NatSpec see smart contract `Voting.sol`
 This is a smart contract for conducting a voting process using blockchain technology. It allows voters to register, submit proposals, and vote on proposals. The voting process has multiple stages that are controlled by the contract owner. Voters can only vote once and can only vote on proposals that have been registered. The winning proposal is the one with the highest number of votes.
 
 ### Contract Information

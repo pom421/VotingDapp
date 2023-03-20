@@ -43,16 +43,16 @@ contract Voting is Ownable {
     mapping (address => Voter) voters;
 
 
-    event VoterRegistered(address voterAddress); 
+    event VoterRegistered(address voterAddress);
     event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
     event ProposalRegistered(uint proposalId);
     event Voted (address voter, uint proposalId);
-    
+
     modifier onlyVoters() {
         require(voters[msg.sender].isRegistered, "You're not a voter");
         _;
     }
-    
+
     // on peut faire un modifier pour les états
 
     // ::::::::::::: GETTERS ::::::::::::: //
@@ -65,7 +65,7 @@ contract Voting is Ownable {
     function getVoter(address _addr) external onlyVoters view returns (Voter memory) {
         return voters[_addr];
     }
-    
+
     /*
     @notice Returns a single proposal from the proposalsMapping based on its ID.
     @param _id uint ID of the proposal to retrieve.
@@ -77,8 +77,8 @@ contract Voting is Ownable {
         return proposalsMapping[_id];
     }
 
- 
-    // ::::::::::::: REGISTRATION ::::::::::::: // 
+
+    // ::::::::::::: REGISTRATION ::::::::::::: //
 
     /*
     @notice Registers a new voter by adding their address to the list of voters.
@@ -91,13 +91,13 @@ contract Voting is Ownable {
     function addVoter(address _addr) external onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, 'Voters registration is not open yet');
         require(voters[_addr].isRegistered != true, 'Already registered');
-    
+
         voters[_addr].isRegistered = true;
         emit VoterRegistered(_addr);
     }
- 
 
-    // ::::::::::::: PROPOSAL ::::::::::::: // 
+
+    // ::::::::::::: PROPOSAL ::::::::::::: //
 
     /*
     @notice Adds a new proposal to the proposals array.
@@ -132,7 +132,7 @@ contract Voting is Ownable {
     @param _id The ID of the proposal to vote for.
     @emit a Voted event.
     */
-    function setVote( uint _id) external onlyVoters {
+    function setVote(uint _id) external onlyVoters {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, 'Voting session havent started yet');
         require(voters[msg.sender].hasVoted != true, 'You have already voted');
         require(_id <= proposalID, 'Proposal not found'); // pas obligé, et pas besoin du >0 car uint
