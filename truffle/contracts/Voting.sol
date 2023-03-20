@@ -16,7 +16,8 @@ import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 contract Voting is Ownable {
 
     uint public winningProposalID;
-    
+    uint proposalID;
+
     struct Voter {
         bool isRegistered;
         bool hasVoted;
@@ -37,7 +38,8 @@ contract Voting is Ownable {
     }
 
     WorkflowStatus public workflowStatus;
-    Proposal[] proposalsArray;
+    // Proposal[] proposalsArray;
+    mapping (uint => Proposal) proposalsMapping;
     mapping (address => Voter) voters;
 
 
@@ -53,12 +55,6 @@ contract Voting is Ownable {
     
     // on peut faire un modifier pour les états
 
-
-    // Add role voter for owner
-    constructor() {
-        voters[msg.sender].isRegistered = true;
-    }
-
     // ::::::::::::: GETTERS ::::::::::::: //
 
     /*
@@ -71,12 +67,14 @@ contract Voting is Ownable {
     }
     
     /*
-    @notice Returns a single proposal from the proposalsArray based on its ID.
+    @notice Returns a single proposal from the proposalsMapping based on its ID.
     @param _id uint ID of the proposal to retrieve.
     @return Proposal memory The proposal object containing all of its details.
     */
     function getOneProposal(uint _id) external onlyVoters view returns (Proposal memory) {
-        return proposalsArray[_id];
+        require(_id <= proposalID, 'Proposal not found'); // pas obligé, et pas besoin du >0 car uint
+
+        return proposalsMapping[_id];
     }
 
  
@@ -117,8 +115,9 @@ contract Voting is Ownable {
 
         Proposal memory proposal;
         proposal.description = _desc;
-        proposalsArray.push(proposal);
-        emit ProposalRegistered(proposalsArray.length-1);
+        proposalID += 1;
+        proposalsMapping[proposalID] = proposal;
+        emit ProposalRegistered(proposalID);
     }
 
     // ::::::::::::: VOTE ::::::::::::: //
@@ -136,14 +135,14 @@ contract Voting is Ownable {
     function setVote( uint _id) external onlyVoters {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, 'Voting session havent started yet');
         require(voters[msg.sender].hasVoted != true, 'You have already voted');
-        require(_id < proposalsArray.length, 'Proposal not found'); // pas obligé, et pas besoin du >0 car uint
+        require(_id <= proposalID, 'Proposal not found'); // pas obligé, et pas besoin du >0 car uint
 
         voters[msg.sender].votedProposalId = _id;
         voters[msg.sender].hasVoted = true;
-        proposalsArray[_id].voteCount++;
+        proposalsMapping[_id].voteCount++;
 
         // we compute the winning proposal
-        if (proposalsArray[_id].voteCount > proposalsArray[winningProposalID].voteCount) {
+        if (proposalsMapping[_id].voteCount > proposalsMapping[winningProposalID].voteCount) {
             winningProposalID = _id;
         }
 
@@ -165,7 +164,7 @@ contract Voting is Ownable {
         
         Proposal memory proposal;
         proposal.description = "GENESIS";
-        proposalsArray.push(proposal);
+        proposalsMapping[0] = proposal;
         
         emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
     }
