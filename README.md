@@ -40,7 +40,9 @@ npm run client:start
 - connect the account in MetaMask
 - check with write and read in homepage
 
-### Déploiement du contrat sur Sepolia
+### Déploiement du contrat sur un testnet
+
+Pour l'exemple, nous allons déployer le contrat sur Sepolia, mais il existe les mêmes scripts pour déployer sur goerli et mumbai.
 
 Cloner le fichier `.env.dist` en `.env` dans le répertoire truffle et remplir les variables d'environnement.
 
@@ -48,8 +50,9 @@ Cloner le fichier `.env.dist` en `.env` dans le répertoire truffle et remplir l
 npm run truffle:migrate:sepolia
 ```
 
-PS: le fichier `.env` doit être correctement configuré (i. e. avoir la mnémonique d'un wallet fourni en ETH sepolia).
-PS: pour d'autres réseaux, ajouter la configuration dans truffle-config.js et le script dans package.json.
+Le fichier `.env` doit être correctement configuré (i. e. avoir la mnémonique d'un wallet fourni en ETH sepolia).
+
+Pour d'autres réseaux, ajouter la configuration dans truffle-config.js et le script dans package.json.
 
 ### Déploiement du client vers le contrat sur Sepolia
 
