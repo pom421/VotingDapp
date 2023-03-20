@@ -2,7 +2,7 @@
 
 Une dapp pour un contrat de vote en solidiy, par Guilhain Averlant & Pierre-Olivier Mauguet.
 
-Déploiement sur [voting-dapp-sage.vercel.app](voting-dapp-sage.vercel.app).
+Déploiement sur [voting-dapp-sage.vercel.app](https://voting-dapp-sage.vercel.app/).
 
 [Vidéo](https://drive.google.com/file/d/16jsxUY2Mi0KpyO-EBEJebaXl4zRvlRVY/view?usp=share_link) de démonstration.
 
