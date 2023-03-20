@@ -1,6 +1,6 @@
 # Voting dapp
 
-dapp for DAO voting par Guilhain Averlant & Pierre-Olivier Mauguet.
+Une dapp pour un contrat de vote en solidiy, par Guilhain Averlant & Pierre-Olivier Mauguet.
 
 Déploiement sur [voting-dapp-sage.vercel.app](voting-dapp-sage.vercel.app).
 
@@ -12,6 +12,8 @@ Déploiement sur [voting-dapp-sage.vercel.app](voting-dapp-sage.vercel.app).
 * [Documentation technique](#documentation-technique)
 
 ## Installation et déploiement
+
+Le code de ce repository utilise un template issue de la box Truffle officiel pour React ([référénce](https://trufflesuite.com/boxes/react/)).
 
 ### Installation
 
@@ -46,7 +48,7 @@ Cloner le fichier `.env.dist` en `.env` dans le répertoire truffle et remplir l
 npm run truffle:migrate:sepolia
 ```
 
-PS: le fichier `.env` doit être bien configuré (i. e. avoir la mnémonique d'un wallet fourni en ETH sepolia).
+PS: le fichier `.env` doit être correctement configuré (i. e. avoir la mnémonique d'un wallet fourni en ETH sepolia).
 PS: pour d'autres réseaux, ajouter la configuration dans truffle-config.js et le script dans package.json.
 
 ### Déploiement du client vers le contrat sur Sepolia
