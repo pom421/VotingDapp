@@ -4,6 +4,8 @@ dapp for DAO voting par Guilhain Averlant & Pierre-Olivier Mauguet.
 
 Déploiement sur [voting-dapp-sage.vercel.app](voting-dapp-sage.vercel.app).
 
+[Vidéo](https://drive.google.com/file/d/16jsxUY2Mi0KpyO-EBEJebaXl4zRvlRVY/view?usp=share_link) de démonstration.
+
 ## Table des matières
 * [Installation et déploiement](#installation-et-déploiement)
 * [Sécurité et optimisation](#sécurité-et-optimisation)
