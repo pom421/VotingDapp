@@ -32,12 +32,11 @@ This is a smart contract for conducting a voting process using blockchain techno
 ## Public Variables
 
 * winningProposalID: uint, indicating the ID of the proposal with the highest number of votes.
-
-## Array
-* proposalsArray: store Proposal structs. Array index become proposalID by default.
+* proposalID: uint, indicating the current number of proposals.
 
 ## Mappings
 
+* proposalsMapping: maps proposal IDs to Proposal structs.
 * voters: maps voter addresses to Voter structs.
 
 ## Contract Events
