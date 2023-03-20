@@ -11,7 +11,7 @@ Déploiement sur [voting-dapp-sage.vercel.app](https://voting-dapp-sage.vercel.a
 
 ## Table des matières
 * [Installation et déploiement](#installation-et-déploiement)
-* [Sécurité et optimisation](#sécurité-et-optimisation)
+* [Sécurité et optimisation](#sécurité-et-optimisations)
 * [Documentation technique](#documentation-technique)
 
 ## Installation et déploiement
@@ -167,10 +167,10 @@ On observe que le stockage dans un mapping consomme moins de gas dans sa globali
 
 #### Après la correction de la faille et stockage des proposals dans un mapping et conversion des uint256 en uint64
 
-Comme il a fallu créer une variable `uint proposalID` en pour stoker les identifiants de `Proposal`. Par conséquent 
-nous avons deux variables uint ce qui rend possible une petite optimisation en gas en restreignant la taille des `uint`
-(par défaut `uint256`) en `uint64` ce qui techniquement restreint le nombre de proposal à (2^64)-1 soit
-18446744073709551615 `proposals`ce qui nous semble raisonnable.
+Il a fallu créer une variable `uint proposalID` pour stocker les identifiants de `Proposal`. Par conséquent, 
+nous avons deux variables uint, ce qui rend possible une petite optimisation en gas en restreignant la taille des `uint`
+(par défaut `uint256`) en `uint64`, ce qui techniquement restreint le nombre de proposal à (2^64)-1 soit
+18446744073709551615 `proposals`, ce qui nous semble raisonnable.
 
 Voici le résultat des tests en gas
 
@@ -187,13 +187,15 @@ Voici le résultat des tests en gas
 
 Nous observons une sur-consomation en gas cette option ne sera pas retenue.
 
-#### Conclusions des optimistations
+#### Conclusion des optimisations
 
-* un stockage en mapping des proposals est optmal
+* un stockage en mapping des proposals est optimal.
 * la conversion des uint en uint64 a un impact négatif sur la consommation du gas du smart contract.
 
 
-## Documentation technique (générée à partir des commentaires NatSpec du code Solidity)
+## Documentation technique
+
+*Documentation générée à partir des commentaires NatSpec du code Solidity.*0
 
 For NatSpec see smart contract `Voting.sol`
 This is a smart contract for conducting a voting process using blockchain technology. It allows voters to register, submit proposals, and vote on proposals. The voting process has multiple stages that are controlled by the contract owner. Voters can only vote once and can only vote on proposals that have been registered. The winning proposal is the one with the highest number of votes.
