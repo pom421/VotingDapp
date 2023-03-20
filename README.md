@@ -16,7 +16,7 @@ Déploiement sur [voting-dapp-sage.vercel.app](https://voting-dapp-sage.vercel.a
 
 ## Installation et déploiement
 
-Le code de ce repository utilise un template issue de la box Truffle officiel pour React ([référénce](https://trufflesuite.com/boxes/react/)).
+Le code de ce repository utilise un template issu de la box Truffle officielle pour React ([référénce](https://trufflesuite.com/boxes/react/)).
 
 ### Installation
 
@@ -29,7 +29,7 @@ npm install
 ### Lancement du smart contract via truffle
 
 1. *En local, lancer un client Ethereum sur le port 8545 (ex: `ganache`)*
-1. npm run truffle:migrate
+1. `npm run truffle:migrate`
 
 ### Lancement du client React
 
@@ -38,14 +38,13 @@ npm run client:start
 ```
 #### MetaMask
 
-- importer a private key of Ganache in MetaMask 
+- importer une clé privéede Ganache dans MetaMask 
 - aller sur localhost:8080
-- connect the account in MetaMask
-- check with write and read in homepage
+- connecter le compte dans MetaMask
 
 ### Déploiement du contrat sur un testnet
 
-Pour l'exemple, nous allons déployer le contrat sur Sepolia, mais il existe les mêmes scripts pour déployer sur goerli et mumbai.
+Pour l'exemple, nous allons déployer le contrat sur Sepolia (mais il existe les mêmes scripts pour déployer sur goerli et mumbai).
 
 Cloner le fichier `.env.dist` en `.env` dans le répertoire truffle et remplir les variables d'environnement.
 
@@ -56,6 +55,15 @@ npm run truffle:migrate:sepolia
 Le fichier `.env` doit être correctement configuré (i. e. avoir la mnémonique d'un wallet fourni en ETH sepolia).
 
 Pour d'autres réseaux, ajouter la configuration dans truffle-config.js et le script dans package.json.
+
+### Configuration sur Vercel
+
+Afin que le front se déploie bien sur Vercel, nous avons dû procéder à de légère customisation dans le dashboard.
+
+<details>
+  <summary>Dashboard Vercel</summary>
+  <img width="951" alt="image" src="https://user-images.githubusercontent.com/3749428/226476464-f8cb2563-fa2b-4a5d-aacc-c1fc160c6a62.png">
+</details>
 
 ### Déploiement du client vers le contrat sur Sepolia
 
